@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 function BodyText(){
     return(
         <>
-        <h1  className="text" >Bienvenue sur AIeasy, votre partenaire idéal pour réussir vos études avec sérénité et efficacité !</h1>
+        <h1  className="text" >Bienvenue sur AITUDIANT, votre partenaire idéal pour réussir vos études avec sérénité et efficacité !</h1>
         
         
         <Box

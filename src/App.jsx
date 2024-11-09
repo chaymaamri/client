@@ -20,6 +20,7 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile" element={<MonCompte />} />
+          {/* <Route path="/emplois" element={<Emplois />} /> */}
           {/* Tu peux ajouter d'autres routes ici si nécessaire */}
         </Routes>
       </Box>
