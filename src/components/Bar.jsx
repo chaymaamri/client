@@ -44,6 +44,13 @@ function Bar() {
     // Ajouter d'autres conditions pour 'Dashboard' ou 'Logout' si nécessaire
   };
 
+  const handlePageClick = (page) => {
+    if (page === 'Chat Positif') {
+      navigate('/chatbot'); // Rediriger vers le chatbot
+    }
+    handleCloseNavMenu();
+  };
+
   return (
     <AppBar position="static" className="custom-navbar">
       <Container maxWidth="xl">
@@ -80,7 +87,7 @@ function Bar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page} onClick={() => handlePageClick(page)}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -121,7 +128,7 @@ function Bar() {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => handlePageClick(page)}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}
