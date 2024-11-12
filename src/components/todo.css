@@ -1,0 +1,41 @@
+/* Blur effect for the To-Do list container */
+.todo-container {
+    width: 400px;
+    height: auto;
+    min-height: 400px;
+    padding: 30px;
+    background: transparent;
+    border: 2px solid #e6b7eca1;
+    border-radius: 10px;
+    backdrop-filter: blur(15px);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+  /* Styling for individual tasks */
+  .todo-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .task {
+    padding: 10px;
+    margin: 8px 0;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #333;
+    transition: color 0.3s;
+  }
+  
+  .task:hover {
+    color: #007bff; /* Change color on hover */
+  }
+  
+  /* Strike-through style for completed tasks */
+  .task.completed {
+    text-decoration: line-through;
+    color: #888;
+  }
+  

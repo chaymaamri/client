@@ -7,6 +7,7 @@ import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import MonCompte from './components/MonCompte';
 import Chatbot from "./components/Chatbot";
+import ToDoList from "./components/ToDoList";
 
 
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile" element={<MonCompte />} />
           <Route path="/chatbot" element={<Chatbot />} />
+          <Route path="/todo" element={<ToDoList />} />
 
           {/* <Route path="/emplois" element={<Emplois />} /> */}
           {/* Tu peux ajouter d'autres routes ici si nécessaire */}
