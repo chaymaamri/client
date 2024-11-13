@@ -63,6 +63,7 @@ function Bar() {
 
   
   return (
+    <header>
     <AppBar
       position="static"
       className="custom-navbar"
@@ -203,6 +204,7 @@ function Bar() {
         </Toolbar>
       </Container>
     </AppBar>
+    </header>
   );
 }
 

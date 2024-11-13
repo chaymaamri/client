@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 
 function BodyText() {
   return (
-    <>
+    <main>
       <h1 className="text">
         Bienvenue sur AITUDIANT, votre partenaire idéal pour réussir vos études
         avec sérénité et efficacité !
@@ -15,6 +15,7 @@ function BodyText() {
           justifyContent: "center", // Centrage horizontal
           alignItems: "center", // Centrage vertical
           height: "5vh",
+          
         }}
       >
         <Button
@@ -32,7 +33,7 @@ function BodyText() {
           Essayer gratuitement
         </Button>
       </Box>
-    </>
+    </main>
   );
 }
 export default BodyText;

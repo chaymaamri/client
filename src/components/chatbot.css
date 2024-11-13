@@ -55,3 +55,20 @@
 .chatbot-button:hover {
   background-color: #0056b3;
 }
+.chat-message {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.user-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bot-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
