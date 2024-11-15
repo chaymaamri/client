@@ -8,6 +8,10 @@ import SignUp from './components/SignUp';
 import MonCompte from './components/MonCompte';
 import Chatbot from "./components/Chatbot";
 import ToDoList from "./components/ToDoList";
+// import Documents from "./components/Documents";
+import ListUniv from "./components/ListUniv";
+import Univ from "./components/Univ";
+import Documents from "./components/Documents";
 
 
 
@@ -24,6 +28,10 @@ function App() {
           <Route path="/profile" element={<MonCompte />} />
           <Route path="/chatbot" element={<Chatbot />} />
           <Route path="/todo" element={<ToDoList />} />
+          <Route path="/universite/:name" element={<Univ/>} /> {/* Ajout de la route pour Univ */}
+          <Route path="/share" element={<ListUniv />} />
+          <Route path="/documents" element={<Documents />} /> {/* Ajout de la route pour Documents */}
+       
 
           {/* <Route path="/emplois" element={<Emplois />} /> */}
           {/* Tu peux ajouter d'autres routes ici si nécessaire */}
