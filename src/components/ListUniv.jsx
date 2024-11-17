@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
@@ -8,8 +8,9 @@ import MenuItem from "@mui/material/MenuItem";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { CardMedia, Alert } from "@mui/material";
+import { CardMedia, Alert,LinearProgress } from "@mui/material";
 import { Link } from "react-router-dom"; // Importer Link pour la navigation
+import axios from "axios";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -29,7 +30,38 @@ function ListUniv() {
   const [image, setImage] = useState(null);
   const [universities, setUniversities] = useState({});
   const [alert, setAlert] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchUniversities = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get('http://localhost:5000/api/universities');
+        const fetchedUniversities = response.data;
+
+        // Organiser les universités par rectorat
+        const organizedUniversities = {};
+        fetchedUniversities.forEach((univ) => {
+          if (!organizedUniversities[univ.rectorat]) {
+            organizedUniversities[univ.rectorat] = [];
+          }
+          organizedUniversities[univ.rectorat].push({
+            name: univ.university,
+            image: univ.image,
+          });
+        });
+        setUniversities(organizedUniversities);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des universités :", error);
+        setAlert("Erreur lors de la récupération des universités.");
+      }
+      finally {
+        setLoading(false); // Arrêter le chargement
+      }
+    };
+
+    fetchUniversities();
+  }, []);
   // Data des rectorats et universités
   const rectorats = {
     "Rectorat de Tunis": [
@@ -285,8 +317,20 @@ function ListUniv() {
   };
 
   // Ajouter une université
-  const handleSubmit = () => {
-    if (rectorat && university && image) {
+ // Ajouter une université
+const handleSubmit = async () => {
+  if (rectorat && university && image) {
+    try {
+      const newUniversity = {
+        rectorat,
+        university,
+        image,
+      };
+
+      // Envoyer les données à l'API
+      await axios.post('http://localhost:5000/api/universities', newUniversity);
+
+      // Mettre à jour l'état local pour afficher la nouvelle université
       setUniversities((prev) => {
         const updated = { ...prev };
         if (!updated[rectorat]) {
@@ -295,15 +339,20 @@ function ListUniv() {
         updated[rectorat].push({ name: university, image });
         return updated;
       });
+
+      // Réinitialiser les champs du formulaire
       setUniversity("");
       setRectorat("");
       setImage(null);
       setAlert(null);
-    } else {
-      setAlert("Veuillez remplir tous les champs et ajouter une image.");
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de l'université :", error);
+      setAlert("Erreur lors de l'ajout de l'université. Veuillez réessayer.");
     }
-  };
-
+  } else {
+    setAlert("Veuillez remplir tous les champs et ajouter une image.");
+  }
+};
   return (
     <>
       <Grid container spacing={2}>
@@ -321,7 +370,10 @@ function ListUniv() {
           <Typography variant="h4" gutterBottom>
             Universités Classées par Rectorat
           </Typography>
-          {Object.keys(universities).length === 0 ? (
+          {loading ? (
+            <LinearProgress /> // Afficher la barre de progression pendant le chargement
+          ) :
+          Object.keys(universities).length === 0 ? (
             <Typography variant="body1">Aucune université ajoutée.</Typography>
           ) : (
             Object.entries(universities).map(([rectorat, univs], idx) => (
