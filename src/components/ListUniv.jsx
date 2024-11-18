@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { CardMedia, Alert,LinearProgress } from "@mui/material";
+import { CardMedia, Alert, LinearProgress } from "@mui/material";
 import { Link } from "react-router-dom"; // Importer Link pour la navigation
 import axios from "axios";
 
@@ -36,7 +36,9 @@ function ListUniv() {
     const fetchUniversities = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('http://localhost:5000/api/universities');
+        const response = await axios.get(
+          "http://localhost:5000/api/universities"
+        );
         const fetchedUniversities = response.data;
 
         // Organiser les universités par rectorat
@@ -52,16 +54,43 @@ function ListUniv() {
         });
         setUniversities(organizedUniversities);
       } catch (error) {
-        console.error("Erreur lors de la récupération des universités :", error);
+        console.error(
+          "Erreur lors de la récupération des universités :",
+          error
+        );
         setAlert("Erreur lors de la récupération des universités.");
-      }
-      finally {
+      } finally {
         setLoading(false); // Arrêter le chargement
       }
     };
 
     fetchUniversities();
+
+    // Récupérer les universités du localStorage
+    const storedUniversities = JSON.parse(localStorage.getItem("universities"));
+    if (storedUniversities) {
+      setUniversities(storedUniversities);
+    }
   }, []);
+   // Fonction pour convertir une image en base64
+   const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  // Gérer le téléchargement de l'image
+  const handleImageUpload = async (event) => {
+    const uploadedImage = event.target.files[0];
+    if (uploadedImage) {
+      const base64Image = await convertToBase64(uploadedImage);
+      setImage(base64Image);
+    }
+  };
+
   // Data des rectorats et universités
   const rectorats = {
     "Rectorat de Tunis": [
@@ -308,51 +337,59 @@ function ListUniv() {
     // ... (vos données rectorats ici)
   };
 
-  // Gérer le téléchargement de l'image
-  const handleImageUpload = (event) => {
-    const uploadedImage = event.target.files[0];
-    if (uploadedImage) {
-      setImage(URL.createObjectURL(uploadedImage));
-    }
-  };
+ 
 
   // Ajouter une université
- // Ajouter une université
-const handleSubmit = async () => {
-  if (rectorat && university && image) {
-    try {
-      const newUniversity = {
-        rectorat,
-        university,
-        image,
-      };
+  const handleSubmit = async () => {
+    if (rectorat && university && image) {
+      try {
+        const newUniversity = {
+          rectorat,
+          university,
+          image,
+        };
 
-      // Envoyer les données à l'API
-      await axios.post('http://localhost:5000/api/universities', newUniversity);
+        // Envoyer les données à l'API
+        await axios.post(
+          "http://localhost:5000/api/universities",
+          newUniversity
+        );
 
-      // Mettre à jour l'état local pour afficher la nouvelle université
-      setUniversities((prev) => {
-        const updated = { ...prev };
-        if (!updated[rectorat]) {
-          updated[rectorat] = [];
-        }
-        updated[rectorat].push({ name: university, image });
-        return updated;
-      });
+        // Mettre à jour l'état local pour afficher la nouvelle université
+        setUniversities((prev) => {
+          const updated = { ...prev };
+          if (!updated[rectorat]) {
+            updated[rectorat] = [];
+          }
+          updated[rectorat].push({ name: university, image });
+          return updated;
+        });
 
-      // Réinitialiser les champs du formulaire
-      setUniversity("");
-      setRectorat("");
-      setImage(null);
-      setAlert(null);
-    } catch (error) {
-      console.error("Erreur lors de l'ajout de l'université :", error);
-      setAlert("Erreur lors de l'ajout de l'université. Veuillez réessayer.");
+        // Stocker les universités dans le localStorage
+        localStorage.setItem(
+          "universities",
+          JSON.stringify({
+            ...universities,
+            [rectorat]: [
+              ...(universities[rectorat] || []),
+              { name: university, image },
+            ],
+          })
+        );
+
+        // Réinitialiser les champs du formulaire
+        setUniversity("");
+        setRectorat("");
+        setImage(null);
+        setAlert(null);
+      } catch (error) {
+        console.error("Erreur lors de l'ajout de l'université :", error);
+        setAlert("Erreur lors de l'ajout de l'université. Veuillez réessayer.");
+      }
+    } else {
+      setAlert("Veuillez remplir tous les champs et ajouter une image.");
     }
-  } else {
-    setAlert("Veuillez remplir tous les champs et ajouter une image.");
-  }
-};
+  };
   return (
     <>
       <Grid container spacing={2}>
@@ -372,8 +409,7 @@ const handleSubmit = async () => {
           </Typography>
           {loading ? (
             <LinearProgress /> // Afficher la barre de progression pendant le chargement
-          ) :
-          Object.keys(universities).length === 0 ? (
+          ) : Object.keys(universities).length === 0 ? (
             <Typography variant="body1">Aucune université ajoutée.</Typography>
           ) : (
             Object.entries(universities).map(([rectorat, univs], idx) => (
@@ -416,7 +452,6 @@ const handleSubmit = async () => {
         {/* Formulaire */}
         <Grid item xs={12} md={4}>
           <Item>
-            {" "}
             <Typography variant="h6">Ajouter une Université</Typography>
             <TextField
               select

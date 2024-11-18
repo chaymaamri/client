@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom'; // Importer Link pour la navigation
 import { Card, CardContent, Typography, TextField, Button, Grid } from '@mui/material';
 
@@ -7,6 +7,25 @@ const Univ = () => {
   const [level, setLevel] = useState('');
   const [specialty, setSpecialty] = useState('');
   const [classes, setClasses] = useState([]); // État pour stocker les classes ajoutées
+  const [image, setImage] = useState(null); // État pour stocker l'image de l'université
+
+  useEffect(() => {
+    // Récupérer les universités du localStorage
+    const storedUniversities = JSON.parse(localStorage.getItem("universities"));
+    console.log("Stored Universities:", storedUniversities); // Log des universités stockées
+
+    if (storedUniversities) {
+      // Trouver l'université correspondante
+      for (const rectorat in storedUniversities) {
+        const university = storedUniversities[rectorat].find((univ) => univ.name === name);
+        if (university) {
+          console.log("University Found:", university); // Log de l'université trouvée
+          setImage(university.image); // Récupérer l'image de l'université
+          break;
+        }
+      }
+    }
+  }, [name]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,9 +37,6 @@ const Univ = () => {
     }
   };
 
-  // Chemin de l'image de l'université
-  const imageUrl = `${process.env.PUBLIC_URL}/images/${name}.jpg`; // Assurez-vous que le dossier images existe dans le dossier public
-
   return (
     <Grid container spacing={2}>
       {/* Zone d'affichage de l'image de l'université */}
@@ -28,7 +44,11 @@ const Univ = () => {
         <Card>
           <CardContent>
             <Typography variant="h4">{name}</Typography>
-            <img src={imageUrl} alt={name} style={{ width: '100%', height: 'auto' }} />
+            <img
+              src={image || `${process.env.PUBLIC_URL}/images/default.jpg`} // Utiliser l'image récupérée ou une image par défaut
+              alt={name}
+              style={{ width: '100%', height: 'auto' }}
+            />
           </CardContent>
         </Card>
         <Typography variant="h6" style={{ marginTop: '16px' }}>
@@ -62,7 +82,6 @@ const Univ = () => {
                 fullWidth
                 required
               />
-              
               <TextField
                 label="Spécialité"
                 value={specialty}
