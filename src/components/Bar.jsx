@@ -1,4 +1,4 @@
-import * as React from "react";
+import  React ,{useEffect,useState} from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -61,6 +61,12 @@ function Bar() {
     }
     handleCloseNavMenu();
   };
+  const [logo, setLogo] = useState('');
+
+  useEffect(() => {
+    setLogo(`${process.env.PUBLIC_URL}/aitudiant.png`);
+  }, []);
+
 
   return (
     <header>
@@ -125,7 +131,7 @@ function Bar() {
                   maxWidth: { xs: 350, md: 250 },
                 }}
                 alt="aitudiant"
-                src="aitudiant.png"
+                src={logo}
               />
             </Button>
             <Typography

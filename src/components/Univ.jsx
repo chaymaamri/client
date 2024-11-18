@@ -26,14 +26,50 @@ const Univ = () => {
       }
     }
   }, [name]);
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/classes');
+        if (response.ok) {
+          const data = await response.json();
+          setClasses(data.filter(cls => cls.universityName === name)); // Filtrer par nom d'université
+        } else {
+          console.error('Erreur lors de la récupération des classes');
+        }
+      } catch (error) {
+        console.error('Erreur de réseau:', error);
+      }
+    };
 
-  const handleSubmit = (e) => {
+    fetchClasses();
+  }, [name]); // Dépendance sur le nom de l'université
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Ajouter la classe à l'état
     if (level && specialty) {
-      setClasses([...classes, { level, specialty }]);
-      setLevel('');
-      setSpecialty('');
+      const newClass = { level, specialty, universityName: name };
+  
+      // Envoyer la classe au serveur
+      try {
+        const response = await fetch('http://localhost:5000/api/classes', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newClass),
+        });
+  
+        if (response.ok) {
+          const savedClass = await response.json();
+          setClasses([...classes, savedClass]);
+          setLevel('');
+          setSpecialty('');
+        } else {
+          console.error('Erreur lors de l\'ajout de la classe');
+        }
+      } catch (error) {
+        console.error('Erreur de réseau:', error);
+      }
     }
   };
 
