@@ -117,6 +117,7 @@ function ListUniv() {
       "Université de Carthage",
       "Faculté des Sciences Juridiques, Politiques et Sociales de Tunis",
       "Faculté des Sciences de Bizerte",
+      "Institut Supérieur de Gestion de Bizerte",
       "Faculté des Sciences Economiques et de Gestion de Nabeul",
       "Ecole Nationale d'Architecture et d'Urbanisme de Tunis",
       "Ecole Polytechnique de Tunisie",

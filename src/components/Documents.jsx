@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
@@ -12,7 +12,7 @@ import CardActions from "@mui/material/CardActions";
 import TextField from "@mui/material/TextField";
 import SendIcon from "@mui/icons-material/Send";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import { CardMedia, Alert } from "@mui/material";
+import { CardMedia, Alert, LinearProgress } from "@mui/material";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -31,7 +31,25 @@ function Documents() {
   const [description, setDescription] = useState("");
   const [fileList, setFileList] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [alert, setAlert] = useState(null); // State for controlling the alert
+  const [alert, setAlert] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFiles = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('http://localhost:5000/api/files');
+        const files = await response.json();
+        setFileList(files);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des fichiers :", error);
+      } finally {
+        setLoading(false); // Arrêter le chargement
+      }
+    };
+
+    fetchFiles();
+  }, []);
 
   const handleFileUpload = (event) => {
     const uploadedFile = event.target.files[0];
@@ -40,31 +58,50 @@ function Documents() {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (fileName && description && selectedFile) {
-      const newFile = {
-        name: fileName,
-        description: description,
-        fileType: selectedFile.type,
-        fileUrl: URL.createObjectURL(selectedFile), // Create URL for download
-        coverImage: selectedFile.type.startsWith("image/")
-          ? URL.createObjectURL(selectedFile)
-          : null,
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64File = reader.result;
+        const newFile = {
+          name: fileName,
+          description: description,
+          fileType: selectedFile.type,
+          fileContent: base64File,
+        };
+
+        try {
+          const response = await fetch('http://localhost:5000/api/files', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newFile),
+          });
+
+          if (response.ok) {
+            const savedFile = await response.json();
+            setFileList([...fileList, savedFile]);
+            setFileName("");
+            setDescription("");
+            setSelectedFile(null);
+            setAlert(null);
+          } else {
+            setAlert("Erreur lors de l'envoi du fichier.");
+          }
+        } catch (error) {
+          setAlert("Erreur lors de l'envoi du fichier.");
+        }
       };
-      setFileList([...fileList, newFile]);
-      setFileName("");
-      setDescription("");
-      setSelectedFile(null);
-      setAlert(null); // Clear alert on successful submission
+      reader.readAsDataURL(selectedFile);
     } else {
-      setAlert("Veuillez remplir tous les champs et sélectionner un fichier."); // Set alert message
+      setAlert("Veuillez remplir tous les champs et sélectionner un fichier.");
     }
   };
 
   return (
     <>
       <Grid container spacing={2}>
-        {/* Alert message */}
         {alert && (
           <Grid item xs={12}>
             <Alert severity="warning" onClose={() => setAlert(null)}>
@@ -73,49 +110,52 @@ function Documents() {
           </Grid>
         )}
 
-        {/* Zone d'affichage des fichiers */}
-        <Grid item xs={12} md={8}>
-          <Grid container spacing={2}>
-            {fileList.map((file, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card sx={{ maxWidth: 345 }}>
-                  <CardActionArea>
-                    {file.coverImage ? (
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image={file.coverImage}
-                        alt={file.name}
-                      />
-                    ) : (
-                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 140 }}>
-                        <PictureAsPdfIcon fontSize="large" color="error" />
-                      </div>
-                    )}
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {file.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {file.description}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                  <CardActions>
-                    {/* Download Button with an <a> tag */}
-                    <a href={file.fileUrl} download={file.name} style={{ textDecoration: 'none' }}>
-                      <Button size="small" color="primary">
-                        Télécharger
-                      </Button>
-                    </a>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
+        {loading ? (
+          <Grid item xs={12}>
+            <LinearProgress />
           </Grid>
-        </Grid>
+        ) : (
+          <Grid item xs={12} md={8}>
+            <Grid container spacing={2}>
+              {fileList.map((file, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Card sx={{ maxWidth: 345 }}>
+                    <CardActionArea>
+                      {file.fileType.startsWith("image/") ? (
+                        <CardMedia
+                          component="img"
+                          height="140"
+                          image={file.fileContent}
+                          alt={file.name}
+                        />
+                      ) : (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 140 }}>
+                          <PictureAsPdfIcon fontSize="large" color="error" />
+                        </div>
+                      )}
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {file.name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {file.description}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                    <CardActions>
+                      <a href={file.fileContent} download={file.name} style={{ textDecoration: 'none' }}>
+                        <Button size="small" color="primary">
+                          Télécharger
+                        </Button>
+                      </a>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+        )}
 
-        {/* Formulaire d'importation */}
         <Grid item xs={12} md={4}>
           <Item>
             <h3>Partagez un fichier important, ça peut aider les autres !</h3>
@@ -155,4 +195,5 @@ function Documents() {
     </>
   );
 }
+
 export default Documents;

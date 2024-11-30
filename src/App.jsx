@@ -12,6 +12,7 @@ import ToDoList from "./components/ToDoList";
 import ListUniv from "./components/ListUniv";
 import Univ from "./components/Univ";
 import Documents from "./components/Documents";
+import Timetable from "./components/Timetable"
 
 
 
@@ -31,6 +32,7 @@ function App() {
           <Route path="/universite/:name" element={<Univ/>} /> {/* Ajout de la route pour Univ */}
           <Route path="/share" element={<ListUniv />} />
           <Route path="/documents" element={<Documents />} /> {/* Ajout de la route pour Documents */}
+          <Route path="/time" element={<Timetable/>}/>
        
 
           {/* <Route path="/emplois" element={<Emplois />} /> */}

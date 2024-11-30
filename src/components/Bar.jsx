@@ -58,6 +58,8 @@ function Bar() {
       navigate("/todo"); // Rediriger vers la TODO List
     } else if (page === "Partage Document") {
       navigate("/share");
+    }else if (page === "Emplois du temps") {
+      navigate("/time");
     }
     handleCloseNavMenu();
   };
