@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom"; // Importer useNavigate
 const pages = [
   "Emplois du temps",
   "TODO List",
-  "Chat Positif",
+  // "Chat Positif",
   "Chat académique",
   "PDF",
   "Partage Document",
@@ -52,14 +52,15 @@ function Bar() {
   };
 
   const handlePageClick = (page) => {
-    if (page === "Chat Positif") {
-      navigate("/chatbot"); // Rediriger vers le chatbot
-    } else if (page === "TODO List") {
+    // if (page === "Chat Positif") {
+    //   navigate("/chatbot"); // Rediriger vers le chatbot
+    if (page === "TODO List") {
       navigate("/todo"); // Rediriger vers la TODO List
     } else if (page === "Partage Document") {
       navigate("/share");
-    }else if (page === "Emplois du temps") {
-      navigate("/time");
+    }
+    else if (page === "Chat académique") {
+      navigate("/ChatAcad");
     }
     handleCloseNavMenu();
   };

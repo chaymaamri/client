@@ -7,7 +7,7 @@ const Univ = () => {
   const [level, setLevel] = useState('');
   const [specialty, setSpecialty] = useState('');
   const [classes, setClasses] = useState([]); // État pour stocker les classes ajoutées
-  const [image, setImage] = useState(null); // État pour stocker l'image de l'université
+  //const [image, setImage] = useState(null); // État pour stocker l'image de l'université
 
   useEffect(() => {
     // Récupérer les universités du localStorage
@@ -20,7 +20,7 @@ const Univ = () => {
         const university = storedUniversities[rectorat].find((univ) => univ.name === name);
         if (university) {
           console.log("University Found:", university); // Log de l'université trouvée
-          setImage(university.image); // Récupérer l'image de l'université
+          //setImage(university.image); // Récupérer l'image de l'université
           break;
         }
       }
@@ -80,11 +80,11 @@ const Univ = () => {
         <Card>
           <CardContent>
             <Typography variant="h4">{name}</Typography>
-            <img
+            {/* <img
               src={image || `${process.env.PUBLIC_URL}/images/default.jpg`} // Utiliser l'image récupérée ou une image par défaut
               alt={name}
               style={{ width: '100%', height: 'auto' }}
-            />
+            /> */}
           </CardContent>
         </Card>
         <Typography variant="h6" style={{ marginTop: '16px' }}>

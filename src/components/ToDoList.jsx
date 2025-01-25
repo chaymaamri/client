@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, List, ListItem, ListItemText, Container, Typography, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete'; // Importer l'icône de la poubelle
+import './todo.css'; // Importer le fichier CSS
 
 const TodoList = () => {
   // Déclaration des états
@@ -26,7 +27,12 @@ const TodoList = () => {
   // 3. Fonction pour ajouter une tâche
   const handleAddTask = () => {
     if (task !== '') {
-      setTasks([...tasks, { text: task, completed: false }]);
+      const newTask = {
+        text: task,
+        completed: false,
+        date: new Date().toLocaleString() // Ajoute la date et l'heure actuelles
+      };
+      setTasks([...tasks, newTask]);
       setTask('');
       setError('');
     } else {
@@ -48,22 +54,8 @@ const TodoList = () => {
   };
 
   return (
-    <Container
-      sx={{
-        width: 300,
-        minHeight: 300,
-        padding: 3,
-        background: 'transparent',
-        border: '2px solid #e6b7eca1',
-        borderRadius: 2,
-        backdropFilter: 'blur(15px)',
-        display: 'flex',
-        flexDirection: 'column',
-        textAlign: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Typography variant="h4" sx={{ color: 'white', padding: 2 }}>ToDo List</Typography>
+    <Container className="todo-container">
+      <Typography variant="h4" className="todo-title">TODO LIST</Typography>
       
       <TextField
         label="Ajouter une tâche"
@@ -73,25 +65,21 @@ const TodoList = () => {
         sx={{ width: '100%', marginBottom: 2 }}
       />
       
-      <Button variant="outlined" onClick={handleAddTask}>Ajouter</Button>
+      <Button variant="contained" className="todo-button" onClick={handleAddTask}>Ajouter</Button>
       
       {error && <Typography sx={{ color: 'red', marginTop: 2 }}>{error}</Typography>}
 
-      <List sx={{ width: '100%', paddingTop: 2 }}>
+      <List className="todo-list">
         {tasks.map((task, index) => (
           <ListItem
             key={index}
-            sx={{
-              background: 'transparent',
-              cursor: 'pointer',
-              textDecoration: task.completed ? 'line-through' : 'none',
-              color: task.completed ? 'gray' : 'black',
-              display: 'flex',
-              justifyContent: 'space-between', // Ajout de l'espace pour l'icône
-            }}
+            className={`task ${task.completed ? 'completed' : ''}`}
             onClick={() => toggleCompleted(index)}
           >
-            <ListItemText primary={task.text} />
+            <ListItemText 
+              primary={task.text} 
+              secondary={`Ajouté le: ${task.date}`} // Affiche la date et l'heure d'ajout
+            />
             <IconButton
               onClick={(e) => {
                 e.stopPropagation(); // Empêche l'événement de cliquer sur l'élément de se propager

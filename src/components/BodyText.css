@@ -1,0 +1,92 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* Fancy text animation */
+.text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, #ff6f61, #42a5f5, #66bb6a, #ffeb3b);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: colorChange 10s ease infinite, textSizeChange 10s ease infinite;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Keyframes for color change animation */
+@keyframes colorChange {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Keyframes for text size change animation */
+@keyframes textSizeChange {
+    0%, 100% {
+        font-size: 3.5rem;
+    }
+    50% {
+        font-size: 3.75rem;
+    }
+}
+
+/* Container for images and text */
+.image-text-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Image styles */
+.image-text-container img {
+    width: 120px;
+    height: auto;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    .text {
+        font-size: 1rem;
+    }
+
+    @keyframes textSizeChange {
+        0%, 100% {
+            font-size: 1rem;
+        }
+        50% {
+            font-size: 1.25rem;
+        }
+    }
+
+    .image-text-container img {
+        width: 50px;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+    .text {
+        font-size: 1.25rem;
+    }
+
+    @keyframes textSizeChange {
+        0%, 100% {
+            font-size: 1.25rem;
+        }
+        50% {
+            font-size: 1.5rem;
+        }
+    }
+
+    .image-text-container img {
+        width: 40px;
+    }
+}

@@ -1,0 +1,95 @@
+
+/* Styles pour l'icône de réponse */
+.response-icon {
+    vertical-align: middle; /* Aligne l'icône avec le texte */
+    margin-right: 5px; /* Espace entre l'icône et le texte */
+    color: #007bff; /* Couleur de l'icône */
+}
+/* Conteneur principal du chat */
+.chat-container {
+    width: 100%; /* Prend 100% de la largeur de l'écran */
+    max-width: 600px; /* Largeur maximale pour les grands écrans */
+    height: 80vh; /* Hauteur ajustée pour occuper une bonne partie de l'écran */
+    border: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff; /* Fond blanc pour le chat */
+    border-radius: 8px; /* Coins arrondis */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre pour un effet de profondeur */
+}
+
+/* En-tête du chat */
+.chat-header {
+    background-color: #007bff; /* Couleur de fond de l'en-tête */
+    color: white; /* Couleur du texte */
+    padding: 10px; /* Espacement interne */
+    text-align: center; /* Centre le texte */
+    font-size: 1.5em; /* Taille de police */
+    border-top-left-radius: 8px; /* Coins arrondis */
+    border-top-right-radius: 8px; /* Coins arrondis */
+}
+
+/* Zone des messages */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto; /* Permet le défilement si le contenu dépasse */
+    padding: 10px;
+}
+
+/* Styles des messages */
+.message {
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Style pour les messages de l'utilisateur */
+.user {
+    background-color: #d1e7dd; /* Couleur de fond pour les messages de l'utilisateur */
+    align-self: flex-end; /* Aligne à droite */
+}
+
+/* Zone de saisie */
+.chat-input {
+    display: flex;
+    padding: 10px;
+}
+
+/* Champ de saisie */
+.chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Bouton d'envoi */
+.chat-input button {
+    margin-left: 10px;
+    padding: 10px;
+    background-color: #007bff; /* Couleur du bouton */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Styles responsives */
+@media (max-width: 480px) {
+    .chat-container {
+        height: 90vh; /* Hauteur ajustée pour les petits écrans */
+        max-width: 100%; /* Prend toute la largeur de l'écran */
+    }
+
+    .chat-header {
+        font-size: 1.2em; /* Taille de police plus petite pour l'en-tête */
+    }
+
+    .chat-input input {
+        font-size: 14px; /* Taille de police plus petite pour le champ de saisie */
+    }
+
+    .chat-input button {
+        font-size: 14px; /* Taille de police plus petite pour le bouton */
+    }
+}

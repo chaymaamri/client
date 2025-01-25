@@ -93,7 +93,7 @@ function ListUniv() {
 
   // Data des rectorats et universités
   const rectorats = {
-    "Rectorat de Tunis": [
+    "Université de Tunis": [
       "Université de Tunis",
       "Faculté des Sciences Humaines et Sociales de Tunis",
       "Ecole Supérieure des Sciences Economiques et Commerciales de Tunis",
@@ -113,7 +113,7 @@ function ListUniv() {
       "Institut National du Patrimoine",
       "Tunis Business School",
     ],
-    "Rectorat de Carthage": [
+    "Université de Carthage": [
       "Université de Carthage",
       "Faculté des Sciences Juridiques, Politiques et Sociales de Tunis",
       "Faculté des Sciences de Bizerte",
@@ -149,7 +149,7 @@ function ListUniv() {
       "Institut National de Recherche en Génie Rural, Eau et Forêt",
       "Institut National de Recherche Agronomique de Tunis",
     ],
-    "Rectorat de Sousse": [
+    "Université de Sousse": [
       "Université de Sousse",
       "Faculté de Droit et des Sciences Economiques et Politiques de Sousse",
       "Faculté de Médecine de Sousse",
@@ -168,7 +168,7 @@ function ListUniv() {
       "Institut Supérieur des Sciences infirmières de Sousse",
       "Ecole Supérieure des Sciences et des technologies de Hammam Sousse",
     ],
-    "Rectorat de Sfax": [
+    "Université de Sfax": [
       "Université de Sfax",
       "Faculté des Sciences Economiques et de Gestion de Sfax",
       "Faculté de Médecine de Sfax",
@@ -191,13 +191,13 @@ function ListUniv() {
       "Ecole Supérieure des Sciences et Techniques de la Santé de Sfax",
       "Institut Supérieur des Sciences infirmières de Sfax",
     ],
-    "Rectorat de Ez-Zitouna": [
+    "Université de Ez-Zitouna": [
       "L'Université de Ez-Zitouna",
       "Institut Supérieur de Théologie de Tunis",
       "Institut Supérieur de Civilisation Islamique de Tunis",
       "Centre de Études Islamiques de Kairouan",
     ],
-    "Rectorat de la Manouba": [
+    "Université de la Manouba": [
       "Université de la Manouba",
       "Faculté des Lettres, des Arts et des Humanités de la Manouba",
       "Ecole Supérieure des Sciences et Technologies du Design",
@@ -214,7 +214,7 @@ function ListUniv() {
       "Institut Supérieur de Promotion des Handicapés de Ksar Saïd",
       "Institut Supérieur de l'Histoire de la Tunisie Contemporaine",
     ],
-    "Rectorat de Monastir": [
+    "Université de Monastir": [
       "Université de Monastir",
       "Faculté des Sciences de Monastir",
       "Faculté de Médecine de Monastir",
@@ -233,7 +233,7 @@ function ListUniv() {
       "Institut Supérieur des Sciences Appliquées et de Technologie de Mahdia",
       "Institut Supérieur des Langues Appliquées aux Affaires et au Tourisme de Moknine",
     ],
-    "Rectorat de Gafsa": [
+    "Université de Gafsa": [
       "Université de Gafsa",
       "Faculté des Sciences de Gafsa",
       "Institut Supérieur des Etudes Appliquées en Humanités de Gafsa",
@@ -271,7 +271,7 @@ function ListUniv() {
       "Institut Supérieur des Etudes Technologiques de Bizerte",
       "Institut Supérieur des Etudes Technologiques de Médenine",
     ],
-    "Rectorat de Tunis El Manar": [
+    "Université de Tunis El Manar": [
       "Université de Tunis El Manar",
       "Faculté de Droit et des Sciences Politiques de Tunis",
       "Faculté des Sciences Economiques et de Gestion de Tunis",
@@ -289,7 +289,7 @@ function ListUniv() {
       "Institut Pasteur",
       "Institut de Recherche Vétérinaire de Tunis",
     ],
-    "Rectorat de Jendouba": [
+    "Université de Jendouba": [
       "Université de Jendouba",
       "Faculté des Sciences Juridiques, Economiques et de Gestion de Jendouba",
       "Institut Supérieur des Etudes Appliquées en Humanités du Kef",
@@ -305,7 +305,7 @@ function ListUniv() {
       "Institut supérieur de biotechnologie de Béja",
       "Institut Supérieur des Sciences infirmières du Kef",
     ],
-    "Rectorat de Kairouan": [
+    "Université de Kairouan": [
       "Université de Kairouan",
       "Faculté des Lettres et des Sciences Humaines de Kairouan",
       "Institut Supérieur des Arts et Métiers de Kairouan",
@@ -317,7 +317,7 @@ function ListUniv() {
       "Institut Supérieur des Etudes Appliquées en Sciences Humaines de Sbeïtla",
       "Institut Supérieur des Arts et Métiers de Sidi Bouzid",
     ],
-    "Rectorat de Gabès": [
+    "Université de Gabès": [
       "Université de Gabès",
       "Faculté des Sciences de Gabès",
       "Ecole Nationale d'Ingénieurs de Gabès",
@@ -335,7 +335,7 @@ function ListUniv() {
       "Institut Supérieur des Arts et Métiers de Tataouine",
       "Institut Supérieur des Sciences infirmières de Gabès",
     ],
-    // ... (vos données rectorats ici)
+    // ... (vos données Universités ici)
   };
 
  
@@ -406,7 +406,7 @@ function ListUniv() {
         {/* Zone d'affichage des universités classées par rectorat */}
         <Grid item xs={12} md={8}>
           <Typography variant="h4" gutterBottom>
-            Universités Classées par Rectorat
+             Etablissement Classées par Universités
           </Typography>
           {loading ? (
             <LinearProgress /> // Afficher la barre de progression pendant le chargement
