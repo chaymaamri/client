@@ -1,95 +1,204 @@
-
-/* Styles pour l'icône de réponse */
-.response-icon {
-    vertical-align: middle; /* Aligne l'icône avec le texte */
-    margin-right: 5px; /* Espace entre l'icône et le texte */
-    color: #007bff; /* Couleur de l'icône */
-}
-/* Conteneur principal du chat */
 .chat-container {
-    width: 100%; /* Prend 100% de la largeur de l'écran */
-    max-width: 600px; /* Largeur maximale pour les grands écrans */
-    height: 80vh; /* Hauteur ajustée pour occuper une bonne partie de l'écran */
-    border: 1px solid #ccc;
+    display: flex;
+    width: 60%;
+    max-width: 900px;
+    height: 80vh;
+    margin: 20px auto;
+    /* background: rgba(255, 255, 255, 0.1); */
+    /* border: 2px solid #e6b7eca1;
+    border-radius: 10px; */
+    backdrop-filter: blur(15px);
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Sidebar for conversation history */
+.chat-sidebar {
+    width: 20%;
+    background: #f0f0f0;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+}
+
+.chat-sidebar.hidden {
+    transform: translateX(-100%);
+    box-shadow: none;
+}
+
+.chat-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(45deg, #42a5f5, #1976d2);
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.chat-sidebar-content {
+    padding: 10px;
+}
+
+.chat-sidebar-content .conversation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #e1f5fe;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.chat-sidebar-content .conversation:hover {
+    background: #b3e5fc;
+}
+
+/* Main chat area */
+.chat-main {
+    width: 70%;
     display: flex;
     flex-direction: column;
-    background-color: #fff; /* Fond blanc pour le chat */
-    border-radius: 8px; /* Coins arrondis */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre pour un effet de profondeur */
+    transition: margin-left 0.3s ease;
 }
 
-/* En-tête du chat */
+.chat-main.centered {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+/* Header styling */
 .chat-header {
-    background-color: #007bff; /* Couleur de fond de l'en-tête */
-    color: white; /* Couleur du texte */
-    padding: 10px; /* Espacement interne */
-    text-align: center; /* Centre le texte */
-    font-size: 1.5em; /* Taille de police */
-    border-top-left-radius: 8px; /* Coins arrondis */
-    border-top-right-radius: 8px; /* Coins arrondis */
+    display: flex;
+    align-items: center;
+    background: linear-gradient(45deg, #42a5f5, #1976d2);
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
 }
 
-/* Zone des messages */
+.menu-button {
+    margin-right: 10px;
+    display: none; /* Hide by default */
+}
+
+@media (max-width: 600px) {
+    .menu-button {
+        display: inline-flex; /* Show only on mobile */
+    }
+}
+
+/* Messages container */
 .chat-messages {
     flex: 1;
-    overflow-y: auto; /* Permet le défilement si le contenu dépasse */
-    padding: 10px;
+    padding: 20px;
+    overflow-y: auto;
+    background: #f9f9f9;
 }
 
-/* Styles des messages */
+/* Individual message styling */
 .message {
-    margin: 5px 0;
+    margin-bottom: 10px;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
+    max-width: 80%;
+    word-wrap: break-word;
+    animation: fadeIn 0.5s;
 }
 
-/* Style pour les messages de l'utilisateur */
-.user {
-    background-color: #d1e7dd; /* Couleur de fond pour les messages de l'utilisateur */
-    align-self: flex-end; /* Aligne à droite */
+.message.user {
+    background: #e1f5fe;
+    align-self: flex-end;
 }
 
-/* Zone de saisie */
+.message.bot {
+    background: #e8eaf6;
+    align-self: flex-start;
+}
+
+/* Input container */
 .chat-input {
     display: flex;
     padding: 10px;
+    background: #fff;
+    border-top: 1px solid #ddd;
 }
 
-/* Champ de saisie */
 .chat-input input {
     flex: 1;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     border-radius: 5px;
+    margin-right: 10px;
+    font-size: 1rem;
 }
 
-/* Bouton d'envoi */
-.chat-input button {
-    margin-left: 10px;
-    padding: 10px;
-    background-color: #007bff; /* Couleur du bouton */
+.chat-input input:focus {
+    outline: none;
+    border-color: #42a5f5;
+}
+
+/* Icon button styling */
+.chat-input .MuiIconButton-root {
+    background: linear-gradient(45deg, #42a5f5, #1976d2);
     color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    border-radius: 50%;
+    transition: transform 0.3s;
 }
 
-/* Styles responsives */
-@media (max-width: 480px) {
+.chat-input .MuiIconButton-root:hover {
+    transform: scale(1.1);
+}
+
+/* Response icon styling */
+.response-icon {
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
     .chat-container {
-        height: 90vh; /* Hauteur ajustée pour les petits écrans */
-        max-width: 100%; /* Prend toute la largeur de l'écran */
+        flex-direction: column;
+        height: 70vh;
+    }
+
+    .chat-sidebar {
+        width: 100%;
+        height: 30vh;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        position: absolute;
+        z-index: 1;
+    }
+
+    .chat-main {
+        width: 100%;
+        height: 40vh;
     }
 
     .chat-header {
-        font-size: 1.2em; /* Taille de police plus petite pour l'en-tête */
+        font-size: 1.2rem;
     }
 
     .chat-input input {
-        font-size: 14px; /* Taille de police plus petite pour le champ de saisie */
-    }
-
-    .chat-input button {
-        font-size: 14px; /* Taille de police plus petite pour le bouton */
+        font-size: 0.9rem;
     }
 }
