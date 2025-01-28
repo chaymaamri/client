@@ -1,4 +1,4 @@
-import  React ,{useEffect,useState} from "react";
+import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -58,27 +58,26 @@ function Bar() {
       navigate("/todo"); // Rediriger vers la TODO List
     } else if (page === "Partage Document") {
       navigate("/share");
-    }
-    else if (page === "Chat académique") {
+    } else if (page === "Chat académique") {
       navigate("/ChatAcad");
     }
     handleCloseNavMenu();
   };
+
   const [logo, setLogo] = useState('');
 
   useEffect(() => {
     setLogo(`${process.env.PUBLIC_URL}/aitudiant.png`);
   }, []);
 
-
   return (
     <header>
       <AppBar
-        position="static"
+        position="fixed"
         className="custom-navbar"
-        sx={{ mx: 1, borderRadius: 1, maxWidth: "95%" }}
+        sx={{ width: '100%', top: 0, left: 0, margin: 0, padding: 0, borderRadius: 0, height: '65px' }}
       >
-        <Container maxWidth="xl">
+        <Container maxWidth="xl" sx={{ padding: 0 }}>
           <Toolbar disableGutters className="custom-toolbar">
             {/* Mobile Menu Button */}
             <Box

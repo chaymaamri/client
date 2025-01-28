@@ -150,8 +150,8 @@ function ChatWidget() {
             position: "fixed",
             bottom: 80,
             right: 16,
-            width: { xs: '90%', sm: 350 }, // Responsive width
-            height: { xs: '70%', sm: 450 }, // Responsive height
+            width: { xs: '80%', sm: 300 }, // Reduced width
+            height: { xs: '60%', sm: 400 }, // Reduced height
             background: "linear-gradient(135deg, #f9f9f9 30%, #e3f2fd 90%)",
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
             borderRadius: "10px",

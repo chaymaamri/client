@@ -19,7 +19,7 @@ import ChatAcad from "./components/ChatAcad";
 function App() {
   return (
     <AuthProvider>
-      <Box sx={{ fontFamily: "Arial", minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ fontFamily: "Arial", minHeight: '100vh', display: 'flex', flexDirection: 'column', marginTop: '65px' }}>
         <Bar />
         
         <Routes>
