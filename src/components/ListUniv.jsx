@@ -453,10 +453,10 @@ function ListUniv() {
         {/* Formulaire */}
         <Grid item xs={12} md={4}>
           <Item>
-            <Typography variant="h6">Ajouter une Université</Typography>
+            <Typography variant="h6">Ajouter une Etablissement</Typography>
             <TextField
               select
-              label="Rectorat"
+              label="Université"
               value={rectorat}
               onChange={(e) => setRectorat(e.target.value)}
               fullWidth
@@ -470,7 +470,7 @@ function ListUniv() {
             </TextField>
             <TextField
               select
-              label="Université"
+              label="Etablissement"
               value={university}
               onChange={(e) => setUniversity(e.target.value)}
               fullWidth
