@@ -1,7 +1,10 @@
+/* Appliquez la police Lora à tous les éléments */
+
 body{
     height: 100vh; 
     background: radial-gradient(circle, #b6d1fad0, #ffffff);
     padding: 20px;
+    font-family: 'lora';
 }
 
 .custom-navbar{
@@ -23,3 +26,20 @@ body{
   text-align: center;
 }
 
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 4px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Background of the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #add8e6; /* Light blue color for the scrollbar thumb */
+  border-radius: 10px; /* Rounded corners for the scrollbar thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #87ceeb; /* Slightly darker light blue color for the scrollbar thumb on hover */
+}
