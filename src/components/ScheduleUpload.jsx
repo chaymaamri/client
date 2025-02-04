@@ -1,65 +1,74 @@
-import React, { useState } from 'react';
-import { Paper, Typography, Button, Box, CircularProgress, Alert } from '@mui/material';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import axios from 'axios';
-import Timetable from './Timetable';
+import React, { useState } from "react";
+import axios from "axios";
+import { Button, Typography, Box, List, ListItem, ListItemText } from "@mui/material";
 
 function ScheduleUpload() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [file, setFile] = useState(null);
   const [schedule, setSchedule] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
 
-  const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
 
+  const handleUpload = async () => {
     const formData = new FormData();
-    formData.append('pdf', file);
-
-    setLoading(true);
-    setError('');
+    formData.append("pdf", file);
 
     try {
-      const response = await axios.post('/api/upload', formData);
-      const scheduleResponse = await axios.get('/api/schedule');
-      console.log('Received Schedule:', scheduleResponse.data); // Log the received schedule
-      setSchedule(scheduleResponse.data);
-    } catch (err) {
-      setError('Failed to upload schedule. Please try again.');
-      console.error(err);
-    } finally {
-      setLoading(false);
+      const response = await axios.post("http://localhost:5000/api/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      setSchedule(response.data.schedule);
+      setSuggestions(response.data.suggestions);
+    } catch (error) {
+      console.error("Erreur lors de l'upload :", error);
     }
   };
 
   return (
-    <Paper sx={{ p: 2 }}>
+    <Box sx={{ p: 2 }}>
       <Typography variant="h5" gutterBottom>
-        Upload Schedule
+        📂 Télécharger un emploi du temps
       </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <input
-          accept="application/pdf"
-          style={{ display: 'none' }}
-          id="upload-pdf"
-          type="file"
-          onChange={handleFileUpload}
-        />
-        <label htmlFor="upload-pdf">
-          <Button
-            variant="contained"
-            component="span"
-            startIcon={<CloudUploadIcon />}
-            disabled={loading}
-          >
-            Upload PDF Schedule
-          </Button>
-        </label>
-        {loading && <CircularProgress sx={{ mt: 2 }} />}
-        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+      <input type="file" onChange={handleFileChange} />
+      <Button variant="contained" color="primary" onClick={handleUpload} sx={{ mt: 2 }}>
+        Upload
+      </Button>
+
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          📅 Emploi du temps extrait
+        </Typography>
+        <List>
+          {schedule.map((entry, index) => (
+            <ListItem key={index}>
+              <ListItemText
+                primary={`${entry.day} | ${entry.time}`}
+                secondary={`📖 ${entry.name} | 👨‍🏫 ${entry.instructor}`}
+              />
+            </ListItem>
+          ))}
+        </List>
       </Box>
-      {schedule.length > 0 && <Timetable schedule={schedule} />}
-    </Paper>
+
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          🎓 Suggestions de révision
+        </Typography>
+        <List>
+          {suggestions.map((item, index) => (
+            <ListItem key={index}>
+              <ListItemText
+                primary={`📖 ${item.subject}`}
+                secondary={item.suggestions}
+              />
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+    </Box>
   );
 }
 

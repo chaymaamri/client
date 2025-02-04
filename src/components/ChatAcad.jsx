@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Box, TextField, Button, List, ListItem, ListItemText, Paper, Divider, Typography, IconButton, Menu, MenuItem, Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery } from '@mui/material';
 import { Send, Add, MoreVert, Menu as MenuIcon } from '@mui/icons-material';
 import '@fontsource/poppins'; // Importing a modern font
+import { get as getEmoji } from 'node-emoji'; // Importing specific function from node-emoji
 
 const ChatAcad = () => {
   const [input, setInput] = useState('');
@@ -11,7 +12,6 @@ const ChatAcad = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openRenameDialog, setOpenRenameDialog] = useState(false);
   const [newDiscussionName, setNewDiscussionName] = useState('');
-  const [chatResponses, setChatResponses] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const isMobile = useMediaQuery('(max-width:600px)');
@@ -20,33 +20,41 @@ const ChatAcad = () => {
   const handleSend = async () => {
     if (input.trim()) {
       const newMessage = { text: input, sender: 'user', discussionId: currentDiscussion };
-      setMessages([...messages, newMessage]);
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
       setInput('');
       setIsTyping(false);
 
       try {
-        // Call OpenAI API to get a response
-        const response = await fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
+        // Call your backend API to get a response
+        const response = await fetch('/api/chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer YOUR_OPENAI_API_KEY`
           },
-          body: JSON.stringify({
-            prompt: input,
-            max_tokens: 150
-          })
+          body: JSON.stringify({ message: input })
         });
         const data = await response.json();
-        if (data.choices && data.choices[0] && data.choices[0].text) {
-          const aiMessage = { text: data.choices[0].text.trim(), sender: 'ai', discussionId: currentDiscussion };
-          setChatResponses([...chatResponses, aiMessage]);
+        if (data.message) {
+          const aiMessage = { text: addEmojis(data.message), sender: 'ai', discussionId: currentDiscussion };
+          setMessages((prevMessages) => [...prevMessages, aiMessage]);
         } else {
           console.error('Unexpected response structure:', data);
         }
       } catch (error) {
         console.error('Error fetching OpenAI response:', error);
       }
+    }
+  };
+
+  const addEmojis = (text) => {
+    if (text.includes('happy')) {
+      return `${text} ${getEmoji('smile')}`;
+    } else if (text.includes('sad')) {
+      return `${text} ${getEmoji('disappointed')}`;
+    } else if (text.includes('angry')) {
+      return `${text} ${getEmoji('angry')}`;
+    } else {
+      return text;
     }
   };
 
@@ -74,7 +82,6 @@ const ChatAcad = () => {
     setDiscussions([...discussions, newDiscussion]);
     setCurrentDiscussion(newDiscussion.id);
     setMessages([]);
-    setChatResponses([]);
   };
 
   const handleMenuOpen = (event) => {
@@ -102,7 +109,6 @@ const ChatAcad = () => {
   const handleDeleteDiscussion = (id) => {
     setDiscussions(discussions.filter(discussion => discussion.id !== id));
     setMessages(messages.filter(message => message.discussionId !== id));
-    setChatResponses(chatResponses.filter(response => response.discussionId !== id));
     setAnchorEl(null);
   };
 
@@ -116,7 +122,7 @@ const ChatAcad = () => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
-  }, [messages, chatResponses, isTyping]);
+  }, [messages, isTyping]);
 
   return (
     <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', bgcolor: '#f0f2f5', marginTop: '64px', fontFamily: 'Poppins, sans-serif' }}>
@@ -180,30 +186,10 @@ const ChatAcad = () => {
                       animation: 'bounce 0.5s'
                     }}
                   >
+                    <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: message.sender === 'user' ? '#fff' : '#000' }}>
+                      {message.sender === 'user' ? 'You' : 'AI'}
+                    </Typography>
                     <ListItemText primary={message.text} />
-                  </Paper>
-                </ListItem>
-              ))}
-            {chatResponses
-              .filter((response) => response.discussionId === currentDiscussion)
-              .map((response, index) => (
-                <ListItem key={index} sx={{ justifyContent: 'flex-start' }}>
-                  <Paper
-                    elevation={3}
-                    sx={{
-                      padding: 1,
-                      maxWidth: { xs: '80%', sm: '60%' },
-                      borderRadius: 4,
-                      backgroundColor: '#e0e0e0',
-                      color: '#000',
-                      boxShadow: 2,
-                      '&:hover': { boxShadow: 4 },
-                      transition: 'all 0.3s ease',
-                      fontFamily: 'Poppins, sans-serif',
-                      animation: 'bounce 0.5s'
-                    }}
-                  >
-                    <ListItemText primary={response.text} />
                   </Paper>
                 </ListItem>
               ))}
@@ -247,7 +233,7 @@ const ChatAcad = () => {
             endIcon={<Send />}
             sx={{ borderRadius: 4, boxShadow: 1, '&:hover': { boxShadow: 4 }, fontFamily: 'Poppins, sans-serif' }}
           >
-            
+            Send
           </Button>
         </Box>
       </Box>
