@@ -61,6 +61,9 @@ function Bar() {
     } else if (page === "Chat académique") {
       navigate("/ChatAcad");
     }
+    else if (page === "Emplois du temps") {
+      navigate("/emplois");
+    }
     handleCloseNavMenu();
   };
 

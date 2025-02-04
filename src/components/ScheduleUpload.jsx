@@ -1,18 +1,13 @@
-import { useState } from 'react';
-import { 
-  Paper, 
-  Typography, 
-  Button, 
-  Box,
-  CircularProgress,
-  Alert
-} from '@mui/material';
+import React, { useState } from 'react';
+import { Paper, Typography, Button, Box, CircularProgress, Alert } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from 'axios';
+import Timetable from './Timetable';
 
-function ScheduleUpload({ onScheduleUpdate }) {
+function ScheduleUpload() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [schedule, setSchedule] = useState([]);
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
@@ -27,7 +22,8 @@ function ScheduleUpload({ onScheduleUpdate }) {
     try {
       const response = await axios.post('/api/upload', formData);
       const scheduleResponse = await axios.get('/api/schedule');
-      onScheduleUpdate(scheduleResponse.data);
+      console.log('Received Schedule:', scheduleResponse.data); // Log the received schedule
+      setSchedule(scheduleResponse.data);
     } catch (err) {
       setError('Failed to upload schedule. Please try again.');
       console.error(err);
@@ -62,6 +58,9 @@ function ScheduleUpload({ onScheduleUpdate }) {
         {loading && <CircularProgress sx={{ mt: 2 }} />}
         {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
       </Box>
+      {schedule.length > 0 && <Timetable schedule={schedule} />}
     </Paper>
   );
 }
+
+export default ScheduleUpload;

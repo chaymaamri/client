@@ -1,21 +1,27 @@
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+// SignUp.jsx
+import React, { useState } from 'react';
+import axios from 'axios';
 
 function SignUp() {
-  const { setIsAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleSignIn = () => {
-    // Logique de connexion
-    setIsAuthenticated(true); // Met à jour l'état comme connecté
-    navigate('/profile'); // Redirige vers le profil
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/api/signup', { username, password });
+      // Rediriger l'utilisateur vers la page de connexion ou une autre page
+    } catch (error) {
+      console.error('Erreur d\'inscription', error);
+    }
   };
 
   return (
-    <div>
-      <h2>Sign In</h2>
-      <button onClick={handleSignIn}>Se connecter</button>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Nom d'utilisateur" required />
+      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Mot de passe" required />
+      <button type="submit">S'inscrire</button>
+    </form>
   );
 }
 
