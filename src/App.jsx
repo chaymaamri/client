@@ -16,6 +16,8 @@ import ScheduleUpload from "./components/ScheduleUpload";
 import Timetable from "./components/Timetable";
 import TextUp from "./components/TextUp";
 import Todo from "./components/Todo";
+import TestAuth from "./components/Test";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   const location = useLocation();
@@ -37,6 +39,8 @@ function App() {
           <Route path="/share" element={<ListUniv />} />
           <Route path="/documents" element={<Documents />} />
           <Route path="/ChatAcad" element={<ChatAcad/>}/>
+          <Route path="/test" element={<TestAuth/>}/>
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
         
         

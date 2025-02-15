@@ -11,12 +11,11 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { useNavigate } from "react-router-dom"; // Importer useNavigate
+import { useNavigate } from "react-router-dom";
 
 const pages = [
   "Emplois du temps",
   "TODO List",
-  // "Chat Positif",
   "Chat académique",
   "PDF",
   "Partage Document",
@@ -24,9 +23,10 @@ const pages = [
 const settings = ["Profile", "Dashboard", "Logout"];
 
 function Bar() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -44,33 +44,44 @@ function Bar() {
   };
 
   const handleMenuItemClick = (setting) => {
-    handleCloseUserMenu(); // Fermer le menu après avoir cliqué
+    handleCloseUserMenu();
     if (setting === "Profile") {
-      navigate("/profile"); // Rediriger vers /profile
+      navigate("/profile");
+    } else if (setting === "Dashboard") {
+      navigate("/dashboard");
+    } else if (setting === "Logout") {
+      handleLogout();
     }
-    // Ajouter d'autres conditions pour 'Dashboard' ou 'Logout' si nécessaire
   };
 
   const handlePageClick = (page) => {
-    // if (page === "Chat Positif") {
-    //   navigate("/chatbot"); // Rediriger vers le chatbot
     if (page === "TODO List") {
-      navigate("/todo"); // Rediriger vers la TODO List
+      navigate("/todo");
     } else if (page === "Partage Document") {
       navigate("/share");
     } else if (page === "Chat académique") {
       navigate("/ChatAcad");
-    }
-    else if (page === "Emplois du temps") {
+    } else if (page === "Emplois du temps") {
       navigate("/emplois");
     }
     handleCloseNavMenu();
   };
 
-  const [logo, setLogo] = useState('');
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/signin");
+  };
 
   useEffect(() => {
-    setLogo(`${process.env.PUBLIC_URL}/aitudiant.png`);
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const userData = JSON.parse(storedUser);
+      if (userData && userData.nomPrenom) {
+        setUser(userData);
+      }
+    }
   }, []);
 
   return (
@@ -78,11 +89,10 @@ function Bar() {
       <AppBar
         position="fixed"
         className="custom-navbar"
-        sx={{ width: '100%', top: 0, left: 0, margin: 0, padding: 0, borderRadius: 0, height: '65px' }}
+        sx={{ width: "100%", top: 0, left: 0, margin: 0, padding: 0, borderRadius: 0, height: "65px" }}
       >
         <Container maxWidth="xl" sx={{ padding: 0 }}>
           <Toolbar disableGutters className="custom-toolbar">
-            {/* Mobile Menu Button */}
             <Box
               sx={{
                 flexGrow: 1,
@@ -136,7 +146,7 @@ function Bar() {
                   maxWidth: { xs: 350, md: 250 },
                 }}
                 alt="aitudiant"
-                src={logo}
+                src={`${process.env.PUBLIC_URL}/aitudiant.png`}
               />
             </Button>
             <Typography
@@ -156,7 +166,6 @@ function Bar() {
               }}
             ></Typography>
 
-            {/* Centered Menu Items */}
             <Box
               sx={{
                 flexGrow: 1,
@@ -175,43 +184,39 @@ function Bar() {
               ))}
             </Box>
 
-            {/* Avatar remains on the right */}
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar
-                    alt="Chayma Amri"
-                    src="/static/images/avatar/2.jpg"
-                    className="custom-avatar"
-                  />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: "45px" }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {settings.map((setting) => (
-                  <MenuItem
-                    key={setting}
-                    onClick={() => handleMenuItemClick(setting)}
-                  >
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
+            {user && (
+              <Box sx={{ flexGrow: 0 }}>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar alt={user.nomPrenom} src={user.nomPrenom}>
+                      {user.nomPrenom.charAt(0).toUpperCase()}
+                    </Avatar>
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: "45px" }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {settings.map((setting) => (
+                    <MenuItem key={setting} onClick={() => handleMenuItemClick(setting)}>
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </Box>
+            )}
           </Toolbar>
         </Container>
       </AppBar>
