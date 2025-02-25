@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, List, ListItem, ListItemText, Container, Typography, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete'; // Importer l'icône de la poubelle
+import axios from 'axios';
 import './todo.css'; // Importer le fichier CSS
 
 const TodoList = () => {
@@ -8,6 +9,7 @@ const TodoList = () => {
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState('');
+  const [user, setUser] = useState(null);
   
 
   // 1. Charger les tâches depuis le localStorage dès le chargement du composant
@@ -26,33 +28,42 @@ const TodoList = () => {
   }, [tasks]);
 
   // 3. Fonction pour ajouter une tâche
-  const handleAddTask = () => {
-    if (task !== '') {
-      const newTask = {
-        text: task,
-        completed: false,
-        date: new Date().toLocaleString() // Ajoute la date et l'heure actuelles
-      };
-      setTasks([...tasks, newTask]);
-      setTask('');
-      setError('');
-    } else {
+  const handleAddTask = async () => {
+    if (task === '') {
       setError('Ajouter une tâche!');
+      return;
+    }
+
+    const newTask = { text: task, completed: false, date: new Date().toLocaleString() };
+    setTasks([...tasks, newTask]);
+    setTask('');
+    setError('');
+
+    if (user) {
+      try {
+        await axios.post("http://localhost:5000/api/todo/add", { userId: user.id, task });
+        await axios.post("http://localhost:5000/api/gamification/addPoints", { userId: user.id, points: 5 });
+        await axios.post("http://localhost:5000/api/gamification/updateChallenge", { userId: user.id, challenge: "Super Organisé" });
+
+        const updatedUser = await axios.get(`http://localhost:5000/api/user/${user.id}`);
+        localStorage.setItem("user", JSON.stringify(updatedUser.data));
+        setUser(updatedUser.data);
+      } catch (error) {
+        console.error("Erreur lors de l'ajout de la tâche :", error);
+      }
     }
   };
-
-  // 4. Fonction pour marquer une tâche comme complétée ou non
   const toggleCompleted = (index) => {
     const newTasks = [...tasks];
     newTasks[index].completed = !newTasks[index].completed;
     setTasks(newTasks);
   };
 
-  // 5. Fonction pour supprimer une tâche
   const handleDeleteTask = (index) => {
-    const newTasks = tasks.filter((task, taskIndex) => taskIndex !== index);
-    setTasks(newTasks); // Met à jour l'état des tâches
+    const newTasks = tasks.filter((_, taskIndex) => taskIndex !== index);
+    setTasks(newTasks);
   };
+
 
   return (
     <Container className="todo-container">

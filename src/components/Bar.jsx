@@ -27,6 +27,7 @@ function Bar() {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -71,6 +72,7 @@ function Bar() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
+    setIsLoggedIn(false);
     navigate("/signin");
   };
 
@@ -80,6 +82,7 @@ function Bar() {
       const userData = JSON.parse(storedUser);
       if (userData && userData.nomPrenom) {
         setUser(userData);
+        setIsLoggedIn(true);
       }
     }
   }, []);
@@ -184,39 +187,43 @@ function Bar() {
               ))}
             </Box>
 
-            {user && (
-              <Box sx={{ flexGrow: 0 }}>
+            <Box sx={{ flexGrow: 0 }}>
+              {isLoggedIn ? (
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt={user.nomPrenom} src={user.nomPrenom}>
-                      {user.nomPrenom.charAt(0).toUpperCase()}
+                    <Avatar alt={user ? user.nomPrenom : "Guest"}>
+                      {user ? user.nomPrenom.charAt(0).toUpperCase() : "G"}
                     </Avatar>
                   </IconButton>
                 </Tooltip>
-                <Menu
-                  sx={{ mt: "45px" }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={() => handleMenuItemClick(setting)}>
-                      <Typography textAlign="center">{setting}</Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Box>
-            )}
+              ) : (
+                <Button color="inherit" onClick={() => navigate("/signin")}>
+                  Se connecter
+                </Button>
+              )}
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={() => handleMenuItemClick(setting)}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
           </Toolbar>
         </Container>
       </AppBar>

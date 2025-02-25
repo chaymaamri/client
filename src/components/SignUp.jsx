@@ -1,4 +1,3 @@
-// SignUp.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -17,28 +16,35 @@ function SignUp() {
   const [etablissement, setEtablissement] = useState('');
   const [hobbies, setHobbies] = useState('');
   const [open, setOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage(''); // Réinitialiser les erreurs
     try {
-      const response = await axios.post('/api/signup', { 
+      const response = await axios.post('/api/auth/signup', { 
         nomPrenom, 
         email, 
         mdp, 
         etablissement, 
         hobbies 
       });
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify({ username: nomPrenom })); // Stocker le nom d'utilisateur
+
       setOpen(true);
       setTimeout(() => {
-        navigate('/'); // Rediriger vers la page d'accueil après 2 secondes
-      }, 2000);
+        navigate('/signin'); // Rediriger vers la page de connexion après 3s
+      }, 3000);
     } catch (error) {
-      console.error('Signup error', error);
+      console.error('Erreur d\'inscription', error);
+      if (error.response && error.response.status === 409) {
+        setErrorMessage("Cet email est déjà utilisé. Essayez un autre.");
+      } else {
+        setErrorMessage("Une erreur s'est produite. Veuillez réessayer.");
+      }
     }
   };
+
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -48,22 +54,26 @@ function SignUp() {
 
   return (
     <div className="signin-container">
-      <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          Inscription réussie !
+          Inscription réussie ! Vérifiez votre e-mail pour activer votre compte.
         </Alert>
       </Snackbar>
+
+      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+
       <form className="form" onSubmit={handleSubmit}>
         <div className="flex-column">
-          <label>Nom et Prenom</label>
+          <label>Nom et Prénom</label>
         </div>
         <div className="inputForm">
           <input
             type="text"
             className="input"
-            placeholder="Enter your Nom et Prenom"
+            placeholder="Entrez votre Nom et Prénom"
             value={nomPrenom}
             onChange={(e) => setNomPrenom(e.target.value)}
+            required
           />
         </div>
 
@@ -74,9 +84,10 @@ function SignUp() {
           <input
             type="email"
             className="input"
-            placeholder="Enter your Email"
+            placeholder="Entrez votre Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
 
@@ -87,41 +98,43 @@ function SignUp() {
           <input
             type="password"
             className="input"
-            placeholder="Enter your Mot de passe"
+            placeholder="Entrez votre mot de passe"
             value={mdp}
             onChange={(e) => setMdp(e.target.value)}
+            required
           />
         </div>
 
         <div className="flex-column">
-          <label>Votre Etablissement</label>
+          <label>Votre Établissement</label>
         </div>
         <div className="inputForm">
           <select
             className="input"
             value={etablissement}
             onChange={(e) => setEtablissement(e.target.value)}
+            required
           >
-            <option value="">Select your Etablissement</option>
-            <option value="ISG Gabes">ISG Gabes</option>
-            <option value="Other">Other</option>
+            <option value="">Sélectionnez votre établissement</option>
+            <option value="ISG Gabes">ISG Gabès</option>
+            <option value="Autre">Autre</option>
           </select>
         </div>
 
         <div className="flex-column">
-          <label>Votre Hobbies</label>
+          <label>Vos Hobbies</label>
         </div>
         <div className="inputForm">
           <input
             type="text"
             className="input"
-            placeholder="Enter your Hobbies"
+            placeholder="Entrez vos hobbies"
             value={hobbies}
             onChange={(e) => setHobbies(e.target.value)}
           />
         </div>
 
-        <button className="button-submit" type="submit">Sign Up</button>
+        <button className="button-submit" type="submit">S'inscrire</button>
       </form>
     </div>
   );
