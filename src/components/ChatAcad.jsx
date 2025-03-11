@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, TextField, Button, List, ListItem, ListItemText, Paper, Divider, Typography, IconButton, Menu, MenuItem, Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery } from '@mui/material';
-import { Send, Add, MoreVert, Menu as MenuIcon } from '@mui/icons-material';
-import '@fontsource/poppins'; // Importing a modern font
-import { get as getEmoji } from 'node-emoji'; // Importing specific function from node-emoji
+import { Box, TextField, List, ListItem,Button, ListItemText, Paper, Divider, Typography, IconButton, Menu, MenuItem, Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery } from '@mui/material';
+import { Add, MoreVert, Menu as MenuIcon } from '@mui/icons-material';
+import { get as getEmoji } from 'node-emoji';
+import ButtonSend from './ButtonSend';
 
 const ChatAcad = () => {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
-  const [discussions, setDiscussions] = useState([{ id: 1, name: 'Discussion 1' }]);
-  const [currentDiscussion, setCurrentDiscussion] = useState(1);
+  const [discussions, setDiscussions] = useState([]);
+  const [currentDiscussion, setCurrentDiscussion] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openRenameDialog, setOpenRenameDialog] = useState(false);
   const [newDiscussionName, setNewDiscussionName] = useState('');
@@ -16,6 +16,43 @@ const ChatAcad = () => {
   const [isTyping, setIsTyping] = useState(false);
   const isMobile = useMediaQuery('(max-width:600px)');
   const chatContainerRef = useRef(null);
+  let typingTimeout;
+
+  useEffect(() => {
+    const fetchDiscussions = async () => {
+      try {
+        const response = await fetch('/api/conversations');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setDiscussions(data);
+        if (data.length > 0) {
+          setCurrentDiscussion(data[0].id);
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des discussions :', error);
+      }
+    };
+
+    fetchDiscussions();
+  }, []);
+
+  useEffect(() => {
+    if (currentDiscussion) {
+      const fetchMessages = async () => {
+        try {
+          const response = await fetch(`/api/messages/${currentDiscussion}`);
+          const data = await response.json();
+          setMessages(data);
+        } catch (error) {
+          console.error('Erreur lors de la récupération des messages :', error);
+        }
+      };
+
+      fetchMessages();
+    }
+  }, [currentDiscussion]);
 
   const handleSend = async () => {
     if (input.trim()) {
@@ -24,8 +61,9 @@ const ChatAcad = () => {
       setInput('');
       setIsTyping(false);
 
+      await saveMessage(newMessage);
+
       try {
-        // Call your backend API to get a response
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: {
@@ -37,12 +75,31 @@ const ChatAcad = () => {
         if (data.message) {
           const aiMessage = { text: addEmojis(data.message), sender: 'ai', discussionId: currentDiscussion };
           setMessages((prevMessages) => [...prevMessages, aiMessage]);
+          await saveMessage(aiMessage);
         } else {
           console.error('Unexpected response structure:', data);
         }
       } catch (error) {
         console.error('Error fetching OpenAI response:', error);
       }
+    }
+  };
+
+  const saveMessage = async (message) => {
+    try {
+      await fetch('/api/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          conversationId: message.discussionId,
+          text: message.text,
+          sender: message.sender,
+        }),
+      });
+    } catch (error) {
+      console.error('Error saving message:', error);
     }
   };
 
@@ -77,11 +134,23 @@ const ChatAcad = () => {
     setCurrentDiscussion(id);
   };
 
-  const handleAddDiscussion = () => {
-    const newDiscussion = { id: discussions.length + 1, name: `Discussion ${discussions.length + 1}` };
-    setDiscussions([...discussions, newDiscussion]);
-    setCurrentDiscussion(newDiscussion.id);
-    setMessages([]);
+  const handleAddDiscussion = async () => {
+    const newDiscussion = { userId: 1, name: `Discussion ${discussions.length + 1}` };
+    try {
+      const response = await fetch('/api/conversations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newDiscussion),
+      });
+      const data = await response.json();
+      setDiscussions([...discussions, data]);
+      setCurrentDiscussion(data.id);
+      setMessages([]);
+    } catch (error) {
+      console.error('Erreur lors de la création de la discussion :', error);
+    }
   };
 
   const handleMenuOpen = (event) => {
@@ -101,22 +170,40 @@ const ChatAcad = () => {
     setOpenRenameDialog(false);
   };
 
-  const handleRenameDialogSave = () => {
-    setDiscussions(discussions.map(discussion => discussion.id === currentDiscussion ? { ...discussion, name: newDiscussionName } : discussion));
+  const handleRenameDialogSave = async () => {
+    const updatedDiscussions = discussions.map(discussion => 
+      discussion.id === currentDiscussion ? { ...discussion, name: newDiscussionName } : discussion
+    );
+    setDiscussions(updatedDiscussions);
     setOpenRenameDialog(false);
+
+    await fetch(`/api/conversations/${currentDiscussion}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: newDiscussionName,
+      }),
+    });
   };
 
-  const handleDeleteDiscussion = (id) => {
+  const handleDeleteDiscussion = async (id) => {
     setDiscussions(discussions.filter(discussion => discussion.id !== id));
     setMessages(messages.filter(message => message.discussionId !== id));
     setAnchorEl(null);
+
+    await fetch(`/api/conversations/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
   };
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
   };
-
-  let typingTimeout;
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -226,15 +313,7 @@ const ChatAcad = () => {
             onKeyPress={handleKeyPress}
             sx={{ bgcolor: '#fff', borderRadius: 2, boxShadow: 1, fontFamily: 'Poppins, sans-serif' }}
           />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSend}
-            endIcon={<Send />}
-            sx={{ borderRadius: 4, boxShadow: 1, '&:hover': { boxShadow: 4 }, fontFamily: 'Poppins, sans-serif' }}
-          >
-            Send
-          </Button>
+          <ButtonSend onClick={handleSend} />
         </Box>
       </Box>
       <Dialog open={openRenameDialog} onClose={handleRenameDialogClose}>

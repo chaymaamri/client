@@ -2,17 +2,16 @@ import React, { useState, useEffect, useRef } from "react";
 import '../components/chatbot.css';
 import { Box, IconButton, Typography, TextField, Button } from "@mui/material";
 import ChatIcon from "@mui/icons-material/Chat";
-import botImage from '../components/bot.png'; // Adjust the path to your bot.png image
-import userImage from '../components/user.png'; // Adjust the path to your user.png image
+import botImage from '../components/bot.png'; // chemin vers bot.png
+import userImage from '../components/user.png'; // chemin vers user.png
 
-function ChatWidget() {
-  const userName = "User  "; // Replace with actual user name if available
-  const initialMessage = `عسلامة ${userName}، كيفاش تحس في روحك اليوم؟`;
+function ChatWidget({ userName }) {
+  const initialMessage = `عسلامة ${userName}، كيفاش تحس في روحك اليوم؟ 😊`;
   const [isOpen, setIsOpen] = useState(false);
   const [chatHistory, setChatHistory] = useState([initialMessage]);
   const [options, setOptions] = useState(['فرحان(ة)', 'تاعب(ة)', 'حزين(ة)']);
   const [step, setStep] = useState(0);
-  const [inputMessage, setInputMessage] = useState(""); // Declare inputMessage state
+  const [inputMessage, setInputMessage] = useState(""); // état pour le champ input
   const chatEndRef = useRef(null);
 
   useEffect(() => {
@@ -24,144 +23,147 @@ function ChatWidget() {
   };
 
   const handleResponse = (choice) => {
-    // Add the user's choice to the chat history
+    // Ajoute le message de l'utilisateur
     setChatHistory((prevHistory) => [...prevHistory, choice]);
 
     let newMessage;
     if (step === 0) {
       if (choice === 'فرحان(ة)') {
-        newMessage = 'الحمد لله! شنوة الحاجة اللي مفرحتك اليوم؟';
-        setOptions(['العائلة', 'النجاح', 'الأصحاب', 'الحياة بصفة عامة']);
+        newMessage = 'الحمد لله! يا سلام 😊، اشرحلي أكثر شنو الحاجة اللي فرحتك اليوم؟';
+        setOptions(['العائلة 👨‍👩‍👧‍👦', 'النجاح 🚀', 'الأصحاب 🤗', 'الحياة بصفة عامة ✨']);
       } else if (choice === 'تاعب(ة)') {
-        newMessage = 'خذ راحتك شوية، ديما راك قادر تتعدى التعب! شنو سبب التعب؟';
-        setOptions(['الخدمة', 'الدراسة', 'المسؤوليات', 'ظروف أخرى']);
+        newMessage = 'خذ راحتك شوية 💪، وإعرف إنك قوي قادر تتعدى التعب. شنو اللي منعبك اليوم؟';
+        setOptions(['الخدمة 💼', 'الدراسة 📚', 'المسؤوليات 📝', 'ظروف أخرى 🙏']);
       } else if (choice === 'حزين(ة)') {
-        newMessage = 'الحياة صعيبة أما ديما نلقاو الأمل! شنوة السبب اللي حزنك؟';
-        setOptions(['الوحدة', 'الصعوبات اليومية', 'فقدان شيء مهم', 'ظروف أخرى']);
+        newMessage = 'أنا هنا معاك ❤️، حتى في أصعب اللحظات. تنجم تحكيلي شنو اللي محزنك؟';
+        setOptions(['الوحدة 🤍', 'الصعوبات اليومية 🙂', 'فقدان شيء مهم 🌟', 'ظروف أخرى 🙏']);
       }
       setStep(1);
     } else if (step === 1) {
-      // Responses for "فرحان(ة)"
-      if (choice === 'العائلة') {
-        newMessage = 'العايلة ديما مصدر الفرح والقوة! تفرح كيف تشوف عايلتك مبسوطين؟';
+      // Réponses pour "فرحان(ة)"
+      if (choice.includes('العائلة')) {
+        newMessage = 'العائلة مصدر الأمان والسعادة 👨‍👩‍👧‍👦!تفرح كي تشوفهم يضحكوا مع بعضهم؟';
         setOptions(['أكيد', 'إيه، عاود من الأول', 'عيشك شكرا']);
-      } else if (choice === 'النجاح') {
-        newMessage = 'النجاح فرحة كبيرة، ديما تذكر التعب اللي عملته باش توصل! عندك نصائح للنجاح؟';
+      } else if (choice.includes('النجاح')) {
+        newMessage = 'النجاح يحلي الحياة 🚀! ديما تذكر التعب اللي عملتو باش توصل. نعطيك نصائح للنجاح؟';
         setOptions(['نحب نصائح للنجاح', 'إيه، عاود من الأول', 'عيشك شكرا']);
-      } else if (choice === 'الأصحاب') {
-        newMessage = 'الأصحاب برشا سعادة! ديما خلي أصحابك المقرّبين ديما جنبك.';
+      } else if (choice.includes('الأصحاب')) {
+        newMessage = 'الأصحاب هم الكنز الحقيقي 🤗! ديما خلي أصحابك المقرّبين بجنبك.';
         setOptions(['نعرف، الحمد لله', 'إيه، عاود من الأول', 'عيشك شكرا']);
-      } else if (choice === 'الحياة بصفة عامة') {
-        newMessage = 'الحياة جميلة، وديما مليانة حاجات حلوة. خلي أملك ديما عالي!';
+      } else if (choice.includes('الحياة بصفة عامة')) {
+        newMessage = 'الحياة مليانة مفاجآت جميلة ✨! خلي أملك عالي وطموحاتك كبيرة.';
         setOptions(['أمل جديد كل يوم', 'إيه، عاود من الأول', 'عيشك شكرا']);
-      } 
-      // Responses for "تاعب(ة)"
-      else if (choice === 'الخدمة') {
-        newMessage = 'الخدمة صعيبة، أما تتعلم منها برشا حاجات. ديما حاول توازن حياتك.';
+      }
+      // Réponses pour "تاعب(ة)"
+      else if (choice.includes('الخدمة')) {
+        newMessage = 'حتى الخدمة تعلمنا دروس قيمة 💼. حاول توازن بين العمل والراحة.';
         setOptions(['كيف نلقى التوازن', 'إيه، عاود من الأول', 'عيشك شكرا']);
-      } else if (choice === 'الدراسة') {
-        newMessage = 'الدراسة تعب، أما المستقبل يستاهل المجهود. عندك نصائح للمراجعة؟';
+      } else if (choice.includes('الدراسة')) {
+        newMessage = 'الدراسة تتطلب جهد ومثابرة 📚. نصيحتي، خذ فترات راحة وراجع بانتظام.';
         setOptions(['نصائح للمراجعة', 'إيه، عاود من الأول', 'عيشك شكرا']);
-      } else if (choice === 'المسؤوليات') {
-        newMessage = 'المسؤوليات برشا، أما تنظيم الوقت يعاونك برشا!';
+      } else if (choice.includes('المسؤوليات')) {
+        newMessage = 'المسؤوليات برشا، لكن التنظيم هو المفتاح 📝. جرب تقسيم مهامك.';
         setOptions(['كيف ننظم وقتي', 'إيه، عاود من الأول', 'عيشك شكرا']);
-      } else if (choice === 'ظروف أخرى') {
-        newMessage = 'ديما ظروف الحياة فيها تحديات، لكن الإيمان والرضا يعاونوا برشا.';
+      } else if (choice.includes('ظروف أخرى')) {
+        newMessage = 'بعض الأحيان، الحياة تختبرنا 🙏. ثق بإمكانياتك واستعن بالإيمان.';
         setOptions(['إن شاء الله', 'إيه، عاود من الأول', 'عيشك شكرا']);
-      } 
-      // Responses for "حزين(ة)"
-      else if (choice === 'الوحدة') {
-        newMessage = 'الوحدة صعيبة، أما فكر في الناس اللي تحبك وتهتم بيك!';
+      }
+      // Réponses pour "حزين(ة)"
+      else if (choice.includes('الوحدة')) {
+        newMessage = 'الوحدة صعيبة، لكن فكّر في الناس اللي تحبك وتهتم بيك 🤍.';
         setOptions(['عندك الحق', 'إيه، عاود من الأول', 'عيشك شكرا']);
-      } else if (choice === 'الصعوبات اليومية') {
-        newMessage = 'الصعوبات اليومية تحدي، أما ديما نحاولوا نشوفوا الجانب الإيجابي.';
+      } else if (choice.includes('الصعوبات اليومية')) {
+        newMessage = 'كل يوم فيه تحديات 🙂، لكن النجاح يكون في تجاوزها بابتسامة.';
         setOptions(['كيف نتعامل معهم', 'إيه، عاود من الأول', 'عيشك شكرا']);
-      } else if (choice === 'فقدان شيء مهم') {
-        newMessage = 'الفقدان يوجع، أما ديما نلقاو حاجات جديدة تعوضنا.';
-        setOptions(['صح، لازم نصبر', 'إيه، عاود من الأول', 'عيشك شكرا']);
+      } else if (choice.includes('فقدان شيء مهم')) {
+        newMessage = 'أحياناً، الفقدان يترك أثر كبير 🌟. لكن الوقت يشفي الجروح ويعوضنا بما هو أجمل.';
+        setOptions(['صحيح، لازم نصبر', 'إيه، عاود من الأول', 'عيشك شكرا']);
       } else {
-        newMessage = 'إن شاء الله الظروف تتحسن وتلقى راحة البال.';
+        newMessage = 'إن شاء الله الظروف تتحسن وتلقى راحة البال 🙏.';
         setOptions(['أمل خير', 'إيه، عاود من الأول', 'عيشك شكرا']);
       }
       setStep(2);
     } else if (step === 2) {
-      // Add specific responses
+      // Réponses spécifiques
       if (choice === 'نحب نصائح للنجاح') {
-        newMessage = 'باش تنجح، نظم وقتك، حدد أهداف واضحة، وديما تعلم من تجاربك. تتمنى حاجة أخرى؟';
+        newMessage = 'باش تنجح، نظم وقتك، حدد أهداف واضحة، وتعلم من تجارب الآخرين 🏆. النجاح يستحق كل جهد!';
         setOptions(['عيشك شكرا']);
       } else if (choice === 'أمل جديد كل يوم') {
-        newMessage = 'كل يوم يجي بأمل جديد، خليك ديما متفائل وتحدى الصعاب.';
+        newMessage = 'كل يوم فرصة جديدة لتحقيق أحلامك 🌞. ابتسم وواجه التحديات!';
         setOptions(['عيشك شكرا']);
       } else if (choice === 'كيف نلقى التوازن') {
-        newMessage = 'التوازن يتطلب تنظيم الوقت وتخصيص وقت للراحة. المهم تلتزم بخطة واضحة.';
+        newMessage = 'التوازن بين العمل والحياة هو سر السعادة ⚖️. حاول تخصص وقت لنفسك ولعائلتك.';
         setOptions(['عيشك شكرا']);
       } else if (choice === 'نصائح للمراجعة') {
-        newMessage = 'خذ وقت للراحة بين المراجعات، خطط مسبقاً، وذاكر في بيئة هادئة. تواصل نعاونك؟';
+        newMessage = 'المراجعة بانتظام مع فترات استراحة تساعدك في تثبيت المعلومات 📝. جرب تقسيم الدراسة!';
         setOptions(['عيشك شكرا']);
       } else if (choice === 'كيف ننظم وقتي') {
-        newMessage = 'التنظيم يبدأ بتحديد أولوياتك واستعمال أدوات للتنظيم كيف To-Do List وGoogle Calendar.';
+        newMessage = 'استعمل أدوات تنظيم الوقت مثل  To-Do List في تطبيقنا  AITUDIANT ⏰. التنظيم يصنع الفرق!';
         setOptions(['عيشك شكرا']);
       } else if (choice === 'عندك الحق') {
-        newMessage = 'مهم تلقى الناس اللي تفهمك وتعاونك. العزلة تزيد الحزن، تقرب من الناس اللي تحبك.';
+        newMessage = 'كون محاط بأشخاص إيجابيين يرفع من معنوياتك 🤝. الأصدقاء الحقيقيون يسندونك دائماً.';
         setOptions(['عيشك شكرا']);
       } else if (choice === 'كيف نتعامل معهم') {
-        newMessage = 'نتعامل معهم بالصبر والثقة في روحك. الأمل هو اللي يعطيك القوة للتحدي.';
+        newMessage = 'الصبر والثقة بالنفس هما الأساس 💪. خلي الأمل في قلبك وواجه التحديات!';
         setOptions(['عيشك شكرا']);
-      } else if (choice === 'صح، لازم نصبر') {
-        newMessage = 'الصبر مفتاح الراحة. ديما تلقى نور بعد كل لحظة صعيبة.';
+      } else if (choice === 'صحيح، لازم نصبر') {
+        newMessage = 'الصبر مفتاح الفرج 🙏. ثق بأن الفرج قريب وابتسم رغم الصعاب.';
         setOptions(['عيشك شكرا']);
       } else if (choice === 'أمل خير') {
-        newMessage = 'إن شاء الله كل حاجة خير قدامك، ديما تفاءل بالخير تلقاه.';
+        newMessage = 'بإذن الله، الخير قادم 🌟. التفاؤل هو مفتاح النجاح!';
         setOptions(['عيشك شكرا']);
       } else if (choice === 'إيه، عاود من الأول') {
         newMessage = initialMessage;
         setOptions(['فرحان(ة)', 'تاعب(ة)', 'حزين(ة)']);
         setStep(0);
       } else if (choice === 'عيشك شكرا') {
-        newMessage = 'مرحبًا بك في أي وقت، نتمنى لك يوم مليء بالسعادة والراحة!';
+        newMessage = 'على الرحب والسعة 😊! تذكر إنك دائماً مرحب بيك هنا.';
         setOptions(['إيه، عاود من الأول']);
       }
     }
 
-    // Update chat history with the new message
+    // Ajoute le nouveau message dans l'historique du chat
     setChatHistory((prevHistory) => [...prevHistory, newMessage]);
   };
 
   return (
     <>
-      {/* Floating Button */}
-      <IconButton onClick={toggleChat} sx={{
-        position: "fixed",
-        bottom: 16,
-        right: 16,
-        background: "linear-gradient(45deg, #1976d2 30%, #42a5f5 90%)",
-        color: "#fff",
-        "&:hover": { background: "linear-gradient(45deg, #1565c0 30%, #2196f3 90%)" },
-        borderRadius: "50%",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
-      }}>
+      {/* Bouton flottant */}
+      <IconButton 
+        onClick={toggleChat} 
+        sx={{
+          position: "fixed",
+          bottom: 16,
+          right: 16,
+          background: "linear-gradient(45deg, #1976d2 30%, #42a5f5 90%)",
+          color: "#fff",
+          "&:hover": { background: "linear-gradient(45deg, #1565c0 30%, #2196f3 90%)" },
+          borderRadius: "50%",
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
+        }}
+      >
         <ChatIcon />
       </IconButton>
 
-      {/* Chat Box */}
+      {/* Boîte de chat */}
       {isOpen && (
         <Box
           sx={{
             position: "fixed",
             bottom: 80,
             right: 16,
-            width: { xs: '80%', sm: 300 }, // Reduced width
-            height: { xs: '60%', sm: 400 }, // Reduced height
+            width: { xs: '80%', sm: 300 },
+            height: { xs: '60%', sm: 400 },
             background: "linear-gradient(135deg, #f9f9f9 30%, #e3f2fd 90%)",
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
             borderRadius: "10px",
             display: "flex",
             flexDirection: "column",
             overflow: "hidden",
-            animation: "fadeIn 0.5s", // Apply fadeIn animation
+            animation: "fadeIn 0.5s",
           }}
         >
-          {/* Header */}
+          {/* En-tête */}
           <Box
             sx={{
               padding: "10px 15px",
@@ -172,11 +174,15 @@ function ChatWidget() {
               alignItems: "center",
             }}
           >
-            <img src={botImage} alt="Bot" style={{ marginRight: 8, width: 40, height: 40, animation: "bounce 1s infinite" }} />
-            <Typography variant="h6">كيفاش تحس في روحك اليوم ؟</Typography>
+            <img 
+              src={botImage} 
+              alt="Bot" 
+              style={{ marginRight: 8, width: 40, height: 40, animation: "bounce 1s infinite" }} 
+            />
+            <Typography variant="h6">كيفاش تحس في روحك اليوم؟</Typography>
           </Box>
 
-          {/* Chat Messages */}
+          {/* Historique du chat */}
           <Box
             sx={{
               flex: 1,
@@ -191,15 +197,18 @@ function ChatWidget() {
                 key={index}
                 sx={{
                   marginBottom: 1,
-                  textAlign: index % 2 === 0 ? "left" : "right", // Adjust alignment based on sender
+                  textAlign: index % 2 === 0 ? "left" : "right",
                   display: "flex",
                   alignItems: "center",
                 }}
               >
-                {index % 2 === 0 ? <img src={botImage} alt="Bot" style={{ marginRight: 8, width: 40, height: 40 }} /> : <img src={userImage} alt="User" style={{ marginRight: 8, width: 40, height: 40 }} />}
+                {index % 2 === 0 
+                  ? <img src={botImage} alt="Bot" style={{ marginRight: 8, width: 40, height: 40 }} />
+                  : <img src={userImage} alt="User" style={{ marginRight: 8, width: 40, height: 40 }} />
+                }
                 <Typography
                   variant="body2"
-                  className={index % 2 === 0 ? "agent-message" : "user-message"} // Use class names for styling
+                  className={index % 2 === 0 ? "agent-message" : "user-message"}
                   sx={{
                     display: "inline-block",
                     padding: "8px",
@@ -212,7 +221,7 @@ function ChatWidget() {
                 </Typography>
               </Box>
             ))}
-            <div ref={chatEndRef} /> {/* Scroll to the end of chat */}
+            <div ref={chatEndRef} />
           </Box>
 
           {/* Options */}
@@ -238,7 +247,7 @@ function ChatWidget() {
             </Box>
           )}
 
-          {/* Input Field */}
+          {/* Champ de saisie (si aucune option n'est présente) */}
           {options.length === 0 && (
             <Box sx={{ padding: "10px" }}>
               <TextField
@@ -253,7 +262,6 @@ function ChatWidget() {
                 variant="contained"
                 color="primary"
                 fullWidth
-                // onClick={handleSendMessage}
                 sx={{
                   background: "linear-gradient(45deg, #1976d2 30%, #42a5f5 90%)",
                   "&:hover": {

@@ -65,6 +65,9 @@ function Bar() {
     } else if (page === "Emplois du temps") {
       navigate("/emplois");
     }
+    else if (page==="PDF"){
+      navigate("/courses");
+    }
     handleCloseNavMenu();
   };
 

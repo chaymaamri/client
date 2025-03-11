@@ -1,0 +1,253 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  Button,
+  Typography,
+  Box,
+  Grid,
+  Snackbar,
+  Alert,
+  Grow,
+  Card,
+  CardContent,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
+import { useDropzone } from "react-dropzone";
+import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from '@mui/icons-material/Close';
+import Loaders from "./Loaders";
+import "./ScheduleUpload.css";
+
+function CourseUpload() {
+  const [files, setFiles] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+
+  const onDrop = (acceptedFiles) => {
+    setFiles([...files, ...acceptedFiles]);
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+  const handleUpload = async () => {
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append("pdfs", file);
+    });
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    formData.append("userId", storedUser.id);
+    setLoading(true);
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/upload-courses", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      console.log("Réponse du serveur :", response.data);
+      setSnackbarMessage("Upload réussi !");
+      setOpenSnackbar(true);
+      fetchCourses();
+    } catch (error) {
+      console.error("Erreur lors de l'upload :", error);
+      setSnackbarMessage("Erreur lors de l'upload !");
+      setOpenSnackbar(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCourses = async () => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!storedUser || !storedUser.id) {
+      console.error("❌ Erreur : ID utilisateur introuvable.");
+      return;
+    }
+
+    try {
+      const response = await axios.get(`http://localhost:5000/api/courses/${storedUser.id}`);
+      setCourses(response.data.courses);
+    } catch (error) {
+      console.error("❌ Erreur lors de la récupération des cours :", error);
+      setCourses([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const handleDelete = async (courseId) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/courses/${courseId}`);
+      setSnackbarMessage("Cours supprimé avec succès !");
+      setOpenSnackbar(true);
+      fetchCourses();
+    } catch (error) {
+      console.error("Erreur lors de la suppression du cours :", error);
+      setSnackbarMessage("Erreur lors de la suppression du cours !");
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
+  const handleOpenDialog = (course) => {
+    setSelectedCourse(course);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedCourse(null);
+  };
+
+  return (
+    <Box sx={{ p: 2 }}>
+      <Typography variant="h5" gutterBottom>
+        Importer vos cours
+      </Typography>
+      <Box {...getRootProps()} sx={{ textAlign: 'center', cursor: 'pointer' }}>
+        <div className="container">
+          <div className="folder">
+            <div className="front-side">
+              <div className="tip"></div>
+              <div className="cover"></div>
+            </div>
+            <div className="back-side cover"></div>
+          </div>
+          <label className="custom-file-upload">
+            <input {...getInputProps()} />
+            {files.length > 0 ? files.map(file => file.name).join(", ") : "📂 Importer vos cours"}
+          </label>
+        </div>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+        <Button
+          className="btn1"
+          variant="contained"
+          color="primary"
+          onClick={handleUpload}
+          sx={{
+            backgroundColor: '#1976d2',
+            '&:hover': {
+              backgroundColor: '#115293',
+            },
+            borderRadius: '8px',
+            padding: '10px 20px',
+            fontSize: '16px',
+          }}
+          disabled={files.length === 0}
+        >
+          Upload
+        </Button>
+        {files.length > 0 && (
+          <IconButton
+            color="secondary"
+            onClick={() => setFiles([])}
+            sx={{ ml: 2 }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        )}
+      </Box>
+
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          📚 Vos cours importés
+        </Typography>
+        {loading && <Loaders />}
+        <Grid container spacing={2}>
+          {courses.map((course, index) => (
+            <Grow in={true} key={index} timeout={1000}>
+              <Grid item xs={12} sm={6} md={4}>
+                <Card variant="outlined" sx={{ borderRadius: '12px', boxShadow: 3 }}>
+                  <CardContent>
+                    <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
+                      {course.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.primary" sx={{ mt: 1, fontSize: '16px' }}>
+                      {course.summary}
+                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleOpenDialog(course)}
+                      >
+                        Voir les points clés
+                      </Button>
+                      <IconButton
+                        color="primary"
+                        onClick={() => handleDelete(course.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grow>
+          ))}
+        </Grid>
+      </Box>
+
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+        <DialogTitle>
+          Points clés
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseDialog}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Grid container spacing={2}>
+            {selectedCourse && selectedCourse.keyPoints && selectedCourse.keyPoints.map((point, index) => (
+              <Grow in={true} key={index} timeout={1000}>
+                <Grid item xs={12}>
+                  <Card variant="outlined" sx={{ borderRadius: '12px', boxShadow: 3 }}>
+                    <CardContent>
+                      <Typography variant="body1" color="text.primary">
+                        {point}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grow>
+            ))}
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Fermer
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbarMessage.includes("Erreur") ? "error" : "success"}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </Box>
+  );
+}
+
+export default CourseUpload;

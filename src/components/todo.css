@@ -1,107 +1,189 @@
-/* Import Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+/* todo.css */
 
-/* Container for the To-Do list */
-.todo-container {
-    width: 90%;
-    max-width: 400px;
-    height: auto;
-    min-height: 400px;
-    padding: 30px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid #e6b7eca1;
-    border-radius: 10px;
-    backdrop-filter: blur(15px);
+/* Fond d'écran animé */
+/* body {
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    min-height: 100vh;
+    margin: 0;
     padding: 20px;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 20px auto;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+} */
+
+/* @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+} */
+
+/* Conteneur principal */
+.todo-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
 }
 
-/* Title styling */
+.todo-container:hover {
+    transform: translateY(-5px);
+}
+
+/* Titre */
 .todo-title {
-    font-family: 'Roboto', sans-serif;
-    font-size: 2rem;
-    font-weight: 700;
-    background: linear-gradient(45deg, #42a5f5, #1976d2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 20px;
+    color: #2c3e50;
+    text-align: center;
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 2rem !important;
+    position: relative;
 }
 
-/* Styling for individual tasks */
-.todo-list {
-    list-style-type: none;
-    padding: 0;
-    width: 100%;
+.todo-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #e73c7e, #23a6d5);
 }
 
-.task {
-    padding: 10px;
-    margin: 8px 0;
-    cursor: pointer;
-    font-size: 1.2rem;
-    color: #333;
-    transition: color 0.3s, background-color 0.3s;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* Champ de saisie */
+.MuiOutlinedInput-root {
+    border-radius: 12px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-.task:hover {
-    color: #1976d2; /* Change color on hover */
-    background: rgba(25, 118, 210, 0.1);
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #23a6d5 !important;
 }
 
-/* Strike-through style for completed tasks */
-.task.completed {
-    text-decoration: line-through;
-    color: #888;
+.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #e73c7e !important;
+    box-shadow: 0 0 0 2px rgba(231, 60, 126, 0.2) !important;
 }
 
-/* Button styles specific to ToDo List */
+/* Bouton Ajouter */
 .todo-button {
-    background: linear-gradient(45deg, #42a5f5, #1976d2);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
+    background: linear-gradient(135deg, #e73c7e, #23a6d5) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    padding: 12px 30px !important;
+    border-radius: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(231, 60, 126, 0.3) !important;
 }
 
 .todo-button:hover {
-    background: linear-gradient(45deg, #1976d2, #42a5f5);
     transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(231, 60, 126, 0.4) !important;
 }
 
-/* Input styles */
-input {
+/* Liste des tâches */
+.todo-list {
+    margin-top: 2rem;
+}
+
+.task {
+    background: white !important;
+    border-radius: 12px !important;
+    margin: 8px 0 !important;
+    padding: 16px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.task:hover {
+    transform: translateX(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.task.completed {
+    background: #f8f9fa !important;
+    opacity: 0.8;
+    position: relative;
+}
+
+.task.completed::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
     width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
+    height: 2px;
+    background: #e73c7e;
+    transform: translateY(-50%) scaleX(0);
+    animation: strike 0.3s ease forwards;
+}
+
+@keyframes strike {
+    from { transform: translateY(-50%) scaleX(0); }
+    to { transform: translateY(-50%) scaleX(1); }
+}
+
+/* Icône de suppression */
+/* .MuiIconButton-root {
+    color: #a0aec0 !important;
+    transition: all 0.3s ease !important;
+} */
+
+/* .MuiIconButton-root:hover {
+    color: #e73c7e !important;
+    transform: scale(1.1); */
+
+/* Texte des tâches */
+.MuiListItemText-primary {
+    font-weight: 600 !important;
+    color: #2c3e50 !important;
+}
+
+.MuiListItemText-secondary {
+    color: #718096 !important;
+    font-size: 0.8rem !important;
+}
+
+/* Animation d'entrée des tâches */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.task {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+
+
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 20px;
     border-radius: 5px;
-}
-
-/* Responsive design */
-@media (max-width: 600px) {
-  .todo-container {
-      width: 100%;
-      padding: 15px;
+    text-align: center;
   }
 
-  .task {
-      font-size: 1rem;
-  }
 
-  .todo-button {
-      width: 100%;
-      padding: 10px;
-  }
-}
+
+
