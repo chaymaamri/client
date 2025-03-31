@@ -50,6 +50,9 @@ function Bar() {
       navigate("/profile");
     } else if (setting === "Dashboard") {
       navigate("/dashboard");
+      } else if (setting === "Profile") {
+      navigate("/profile");
+
     } else if (setting === "Logout") {
       handleLogout();
     }
@@ -59,7 +62,7 @@ function Bar() {
     if (page === "TODO List") {
       navigate("/todo");
     } else if (page === "Partage Document") {
-      navigate("/share");
+      navigate("/documents");
     } else if (page === "Chat académique") {
       navigate("/ChatAcad");
     } else if (page === "Emplois du temps") {

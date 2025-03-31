@@ -184,6 +184,69 @@
     text-align: center;
   }
 
-
-
-
+/* Guirlandes animées */
+.guirlande-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    z-index: -1;
+  }
+  
+  .guirlande {
+    width: 30%;
+    height: 10px;
+    background: linear-gradient(45deg, #ff0000, #ff9900, #33cc33, #3399ff, #cc33ff);
+    animation: swing 2s infinite ease-in-out;
+    border-radius: 5px;
+  }
+  
+  .guirlande:nth-child(2) {
+    animation-delay: 1s;
+  }
+  
+  /* Animation pour les guirlandes */
+  @keyframes swing {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(10deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+  
+  /* Emojis animés */
+  .emoji-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .emoji {
+    font-size: 2rem;
+    animation: float 3s infinite ease-in-out;
+  }
+  
+  /* Animation pour les emojis */
+  /* Animation pour les emojis */
+@keyframes float {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0);
+    } /* Cette accolade manquait */
+  }
+  
+  .emoji:nth-child(2) {
+    animation-delay: 0.5s;
+  }

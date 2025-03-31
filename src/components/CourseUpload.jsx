@@ -22,6 +22,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Loaders from "./Loaders";
 import "./ScheduleUpload.css";
 
+
 function CourseUpload() {
   const [files, setFiles] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -30,6 +31,10 @@ function CourseUpload() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [showPointsModal, setShowPointsModal] = useState(false); // État pour afficher la modal
+const [pointsEarned, setPointsEarned] = useState(0); // État pour les points gagnés
+const [actionType, setActionType] = useState(""); // "import" ou "summary"
+
 
   const onDrop = (acceptedFiles) => {
     setFiles([...files, ...acceptedFiles]);
@@ -37,6 +42,7 @@ function CourseUpload() {
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
+ 
   const handleUpload = async () => {
     const formData = new FormData();
     files.forEach(file => {
@@ -45,15 +51,18 @@ function CourseUpload() {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     formData.append("userId", storedUser.id);
     setLoading(true);
-
+  
     try {
       const response = await axios.post("http://localhost:5000/api/upload-courses", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
+  
       console.log("Réponse du serveur :", response.data);
       setSnackbarMessage("Upload réussi !");
       setOpenSnackbar(true);
+      setPointsEarned(10); // Points gagnés pour l'importation
+      setActionType("import"); // Définir le type d'action
+      setShowPointsModal(true); // Afficher la modal
       fetchCourses();
     } catch (error) {
       console.error("Erreur lors de l'upload :", error);
@@ -103,7 +112,21 @@ function CourseUpload() {
 
   const handleOpenDialog = (course) => {
     setSelectedCourse(course);
-    setOpenDialog(true);
+    setOpenDialog(true); 
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    axios.post("http://localhost:5000/api/courses/summary-view", {
+      userId: storedUser.id,
+      courseId: course.id
+    })
+    .then((response) => {
+      console.log(response.data.message);
+      setPointsEarned(5); // Points gagnés pour la consultation
+      setActionType("summary"); // Définir le type d'action
+      setShowPointsModal(true); // Afficher la modal
+    })
+    .catch((error) => {
+      console.error("Erreur lors de la consultation du résumé :", error);
+    });
   };
 
   const handleCloseDialog = () => {
@@ -113,6 +136,30 @@ function CourseUpload() {
 
   return (
     <Box sx={{ p: 2 }}>
+     <Dialog
+  open={showPointsModal}
+  onClose={() => setShowPointsModal(false)}
+  sx={{ zIndex: 2000 }}
+>
+  <DialogTitle sx={{ textAlign: "center" }}>
+    🎉 Félicitations ! 🎉
+  </DialogTitle>
+  <DialogContent sx={{ textAlign: "center" }}>
+    <Typography variant="h6">
+      {actionType === "import" && (
+        <>Vous avez gagné {pointsEarned} points pour l'importation d'un cours !</>
+      )}
+      {actionType === "summary" && (
+        <>Vous avez gagné {pointsEarned} points pour la consultation d'un résumé !</>
+      )}
+    </Typography>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setShowPointsModal(false)} color="primary">
+      Fermer
+    </Button>
+  </DialogActions>
+</Dialog>
       <Typography variant="h5" gutterBottom>
         Importer vos cours
       </Typography>

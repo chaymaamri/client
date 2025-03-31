@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import '../components/chatbot.css';
-import { Box, IconButton, Typography, TextField, Button } from "@mui/material";
-import ChatIcon from "@mui/icons-material/Chat";
+import { Box, IconButton, Typography, TextField, Button,
+  Dialog, DialogTitle, DialogContent, DialogActions
+ } from "@mui/material";
 import botImage from '../components/bot.png'; // chemin vers bot.png
 import userImage from '../components/user.png'; // chemin vers user.png
+import axios from "axios";
 
 function ChatWidget({ userName }) {
   const initialMessage = `عسلامة ${userName}، كيفاش تحس في روحك اليوم؟ 😊`;
@@ -13,6 +15,8 @@ function ChatWidget({ userName }) {
   const [step, setStep] = useState(0);
   const [inputMessage, setInputMessage] = useState(""); // état pour le champ input
   const chatEndRef = useRef(null);
+  const [showBadgeModal, setShowBadgeModal] = useState(false); // État pour la modal du badge
+const [badgeEarned, setBadgeEarned] = useState(""); // État pour le nom du badge
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -20,6 +24,24 @@ function ChatWidget({ userName }) {
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
+  };
+  const recordChatInteraction = async () => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    try {
+      const response = await axios.post("http://localhost:5000/api/chatpo/interaction", {
+        userId: storedUser.id
+      });
+  
+      console.log(response.data.message);
+  
+      // Vérifier si le badge "Motivé Toujours" est attribué
+      if (response.data.message.includes("badge 'Motivé Toujours' attribué")) {
+        setBadgeEarned("Motivé Toujours");
+        setShowBadgeModal(true); // Afficher la modal du badge
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'enregistrement de l'interaction :", error);
+    }
   };
 
   const handleResponse = (choice) => {
@@ -81,7 +103,7 @@ function ChatWidget({ userName }) {
       } else {
         newMessage = 'إن شاء الله الظروف تتحسن وتلقى راحة البال 🙏.';
         setOptions(['أمل خير', 'إيه، عاود من الأول', 'عيشك شكرا']);
-      }
+      } 
       setStep(2);
     } else if (step === 2) {
       // Réponses spécifiques
@@ -124,11 +146,29 @@ function ChatWidget({ userName }) {
 
     // Ajoute le nouveau message dans l'historique du chat
     setChatHistory((prevHistory) => [...prevHistory, newMessage]);
+    recordChatInteraction();
   };
 
   return (
     <>
-      {/* Bouton flottant */}
+    <Dialog
+  open={showBadgeModal}
+  onClose={() => setShowBadgeModal(false)}
+  sx={{ zIndex: 2000 }}
+>
+  <DialogTitle sx={{ textAlign: "center" }}>🏅 Nouveau Badge ! 🏅</DialogTitle>
+  <DialogContent sx={{ textAlign: "center" }}>
+    <Typography variant="h6">
+      Félicitations, vous avez obtenu le badge : <strong>{badgeEarned}</strong> !
+    </Typography>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setShowBadgeModal(false)} color="primary">
+      Fermer
+    </Button>
+  </DialogActions>
+</Dialog>
+      {/* Bouton flottant avec l'image du bot */}
       <IconButton 
         onClick={toggleChat} 
         sx={{
@@ -142,34 +182,34 @@ function ChatWidget({ userName }) {
           boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
         }}
       >
-        <ChatIcon />
+        <img src={botImage} alt="Bot" style={{ width: 40, height: 40 }} />
       </IconButton>
 
       {/* Boîte de chat */}
       {isOpen && (
         <Box
-          sx={{
-            position: "fixed",
-            bottom: 80,
-            right: 16,
-            width: { xs: '80%', sm: 300 },
-            height: { xs: '60%', sm: 400 },
-            background: "linear-gradient(135deg, #f9f9f9 30%, #e3f2fd 90%)",
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
-            borderRadius: "10px",
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-            animation: "fadeIn 0.5s",
+        sx={{
+          position: "fixed",
+          bottom: 80,
+          right: 16,
+          width: { xs: '80%', sm: 300 },
+          height: { xs: '60%', sm: 400 },
+          background: "linear-gradient(135deg, #f9f9f9 30%, #e3f2fd 90%)", // Lighter blue color
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
+          borderRadius: "10px",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          animation: "fadeIn 0.5s",
           }}
-        >
+          >
           {/* En-tête */}
           <Box
-            sx={{
-              padding: "10px 15px",
-              background: "linear-gradient(45deg, #1976d2 30%, #42a5f5 90%)",
-              color: "#fff",
-              borderRadius: "10px 10px 0 0",
+              sx={{
+                padding: "10px 15px",
+                background: "linear-gradient(45deg, #1976d2 30%, #42a5f5 90%)",
+                color: "#fff",
+                borderRadius: "10px 10px 0 0",
               display: "flex",
               alignItems: "center",
             }}

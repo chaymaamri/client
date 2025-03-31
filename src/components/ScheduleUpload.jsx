@@ -12,12 +12,17 @@ import {
   CardContent,
   IconButton,
   LinearProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+
 } from "@mui/material";
+
 import { useDropzone } from "react-dropzone";
 import DeleteIcon from '@mui/icons-material/Delete';
 import Loaders from "./Loaders"; // Import the Loaders component 
 import "./ScheduleUpload.css"; // Assuming you save the CSS in this file 
-
+import CloseIcon from "@mui/icons-material/Close";
 function ScheduleUpload() {
   const [file, setFile] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
@@ -28,8 +33,10 @@ function ScheduleUpload() {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [scheduleExists, setScheduleExists] = useState(false);
-  const [todoListModified, setTodoListModified] = useState(false); // Nouvel état pour suivre les modifications de la todo list
-
+const [showRewardModal, setShowRewardModal] = useState(false);
+const [pointsEarned, setPointsEarned] = useState(null);
+const [badgeEarned, setBadgeEarned] = useState(null);
+const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
   // Helper function to get emoji based on context
   const getEmojiForSuggestion = (suggestion) => {
     const emojiMap = {
@@ -176,12 +183,43 @@ function ScheduleUpload() {
   
       // Recharger les suggestions fraîchement depuis l'API
       fetchSuggestions();
+  
+      // Afficher la modal combinée pour les points et le badge
+      setPointsEarned(15); // Points ajoutés
+      setBadgeEarned(response.data.badge || null); // Badge reçu (si disponible)
+      setShowRewardModal(true);
+  
+      // Fermer la modal après un délai
+      setTimeout(() => {
+        setShowRewardModal(false);
+        setPointsEarned(null);
+        setBadgeEarned(null);
+      }, 20000);
     } catch (error) {
       console.error("Erreur lors de l'upload :", error);
       setSnackbarMessage("Erreur lors de l'upload !");
       setOpenSnackbar(true);
     } finally {
       setLoading(false);
+    }
+  };
+  const handleFollowSuggestion = async () => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    try {
+      const response = await axios.post("http://localhost:5000/api/revision-suggestions/follow", {
+        userId: storedUser.id
+      });
+      setSnackbarMessage(response.data.message);
+      setOpenSnackbar(true);
+  
+      // Vérifier si le badge "Pro de la Révision" a été attribué
+      if (response.data.message.includes("Badge 'Pro de la Révision' attribué")) {
+        setRevisionBadgeEarned(true); // Mettre à jour l'état pour afficher la modal
+      }
+    } catch (error) {
+      console.error("Erreur lors du suivi de la suggestion :", error);
+      setSnackbarMessage("Erreur lors du suivi de la suggestion !");
+      setOpenSnackbar(true);
     }
   };
   
@@ -268,9 +306,9 @@ function ScheduleUpload() {
   };
 
   // Fonction pour marquer la todo list comme modifiée
-  const markTodoListAsModified = () => {
-    setTodoListModified(true);
-  };
+  // const markTodoListAsModified = () => {
+  //   setTodoListModified(true);
+  // };
 
   // Vérification de la structure des suggestions avant le rendu
   if (!Array.isArray(suggestions)) {
@@ -289,6 +327,32 @@ function ScheduleUpload() {
 
   return (
     <Box sx={{ p: 2 }}>
+      <Dialog
+  open={revisionBadgeEarned}
+  onClose={() => setRevisionBadgeEarned(false)}
+  sx={{ zIndex: 2000 }}
+>
+  <DialogTitle sx={{ position: "relative", textAlign: "center" }}>
+    🎉 Félicitations ! 🎉
+    <IconButton
+      onClick={() => setRevisionBadgeEarned(false)}
+      sx={{ position: "absolute", right: 8, top: 8 }}
+    >
+      <CloseIcon />
+    </IconButton>
+  </DialogTitle>
+  <DialogContent sx={{ textAlign: "center", position: "relative" }}>
+    <Typography variant="h6" sx={{ marginTop: 4 }}>
+      🏅 Vous avez obtenu le badge : <strong>Pro de la Révision</strong> !
+    </Typography>
+    <div className="emoji-container" style={{ marginTop: "16px" }}>
+      <span className="emoji">🎉</span>
+      <span className="emoji">✨</span>
+      <span className="emoji">🎈</span>
+      <span className="emoji">🎊</span>
+    </div>
+  </DialogContent>
+</Dialog>
       <Typography variant="h5" gutterBottom>
         {/* Add your title here */}
       </Typography>
@@ -360,7 +424,51 @@ function ScheduleUpload() {
               <DeleteIcon />
             </IconButton>
           )}
+<Dialog
+  open={showRewardModal}
+  onClose={() => {
+    setShowRewardModal(false);
+    setPointsEarned(null);
+    setBadgeEarned(null);
+  }}
+  sx={{ zIndex: 2000 }}
+>
+  <DialogTitle sx={{ position: "relative", textAlign: "center" }}>
+    🎉 Félicitations ! 🎉
+    <IconButton
+      onClick={() => {
+        setShowRewardModal(false);
+        setPointsEarned(null);
+        setBadgeEarned(null);
+      }}
+      sx={{ position: "absolute", right: 8, top: 8 }}
+    >
+      <CloseIcon />
+    </IconButton>
+  </DialogTitle>
+  <DialogContent sx={{ textAlign: "center", position: "relative" }}>
+    <div className="guirlande-container">
+      <div className="guirlande"></div>
+      <div className="guirlande"></div>
+    </div>
+    <Typography variant="h6" sx={{ marginTop: 4 }}>
+      🎊 Vous avez gagné {pointsEarned} point{pointsEarned > 1 ? "s" : ""} ! 🎊
+    </Typography>
+    {badgeEarned && (
+      <Typography variant="h6" sx={{ marginTop: 2 }}>
+        🏅 Vous avez obtenu le badge : <strong>{badgeEarned}</strong> !
+      </Typography>
+    )}
+    <div className="emoji-container" style={{ marginTop: "16px" }}>
+      <span className="emoji">🎉</span>
+      <span className="emoji">✨</span>
+      <span className="emoji">🎈</span>
+      <span className="emoji">🎊</span>
+    </div>
+  </DialogContent>
+</Dialog>
         </Box>
+        
       )}
 
       <Box sx={{ mt: 4 }}>
@@ -369,37 +477,35 @@ function ScheduleUpload() {
         </Typography>
         {loadingSuggestions && <Loaders />}
         <Grid container spacing={2}>
-          {Array.isArray(suggestions) && suggestions.map((item, index) => (
-            <Grow in={true} key={index} timeout={1000}>
-              <Grid item xs={12} sm={6} md={4}>
-                <Card variant="outlined" sx={{ borderRadius: '12px', boxShadow: 3 }}>
-                  <CardContent>
-                    {/* Affichage du sujet */}
-                    {typeof item.subject === "string" && (
-                      <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
-                        📖 {item.subject}
-                      </Typography>
-                    )}
+        {Array.isArray(suggestions) && suggestions.map((item, index) => (
+  <Grow in={true} key={index} timeout={1000}>
+    <Grid item xs={12} sm={6} md={4}>
+      <Card variant="outlined" sx={{ borderRadius: '12px', boxShadow: 3 }}>
+        <CardContent>
+          {typeof item.subject === "string" && (
+            <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
+              📖 {item.subject}
+            </Typography>
+          )}
+          <Box sx={{ mt: 1 }}>
+            {Array.isArray(item.suggestions) && item.suggestions.map((suggestion, idx) => (
+              <Typography key={idx} variant="body2" color="text.primary" sx={{ mb: 1, fontSize: '16px' }}>
+                {getEmojiForSuggestion(suggestion)} {suggestion}
+              </Typography>
+            ))}
+          </Box>
+          {/* Bouton pour confirmer le suivi de la suggestion */}
+          <Box sx={{ mt: 2, textAlign: "center" }}>
+            <Button variant="contained" color="secondary" onClick={handleFollowSuggestion}>
+              J'ai suivi cette suggestion
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
+    </Grid>
+  </Grow>
+))}
 
-                    {/* Affichage des suggestions */}
-                    <Box sx={{ mt: 1 }}>
-                      {Array.isArray(item.suggestions) && item.suggestions.length > 0 ? (
-                        item.suggestions.map((suggestion, idx) => (
-                          <Typography key={idx} variant="body2" color="text.primary" sx={{ mb: 1, fontSize: '16px' }}>
-                            {getEmojiForSuggestion(suggestion)} {suggestion}
-                          </Typography>
-                        ))
-                      ) : (
-                        <Typography variant="body2" color="text.primary" sx={{ fontSize: '16px' }}>
-                          {item}
-                        </Typography>
-                      )}
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Grow>
-          ))}
         </Grid>
       </Box>
 
@@ -424,7 +530,23 @@ function ScheduleUpload() {
           </Grow>
         </Grid>
       </Box>
-
+      {/* <Snackbar open={showModal} autoHideDuration={6000} onClose={() => setShowModal(false)}>
+  <Alert
+    onClose={() => setShowModal(false)}
+    severity={modalContent.type === "badge" ? "info" : "success"}
+    sx={{ width: '100%' }}
+  >
+    {modalContent.type === "badge" ? (
+      <>
+        🎉 Félicitations ! Vous avez obtenu le badge : <strong>{modalContent.value}</strong> 🏅
+      </>
+    ) : (
+      <>
+        🎉 Vous avez gagné <strong>{modalContent.value} points</strong> ! 🚀
+      </>
+    )}
+  </Alert>
+</Snackbar> */}
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar}>
         <Alert onClose={handleCloseSnackbar} severity={snackbarMessage.includes("Erreur") ? "error" : "success"}>
           {snackbarMessage}

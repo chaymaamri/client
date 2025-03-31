@@ -21,6 +21,8 @@ import TestAuth from './components/Test';
 import Dashboard from './components/Dashboard';
 import NotificationPopup from './components/NotificationPopup';
 import CourseUpload from './components/CourseUpload';
+import AdminLayout from './admin/AdmonLayout';
+import ProfileForm from './components/Profile'
 
 function App() {
   const location = useLocation();
@@ -44,7 +46,7 @@ function App() {
           <Route path="/" element={<BodyText />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/profile" element={<MonCompte />} />
+          <Route path="/profile" element={<ProfileForm />} />
           <Route path="/emplois" element={<ScheduleUpload />} />
           <Route path="/time" element={<Timetable />} />
           <Route path="/todo" element={<ToDoList />} />
@@ -55,6 +57,8 @@ function App() {
           <Route path="/test" element={<TestAuth />} />
           <Route path="/courses" element={<CourseUpload />} />
           <Route path="/dashboard" element={<Dashboard />} />
+            {/* Route “admin” : tout ce qui commence par /admin va vers AdminLayout */}
+        <Route path="/admin/*" element={<AdminLayout />} />
         </Routes>
         {location.pathname === '/' && (
           <>
