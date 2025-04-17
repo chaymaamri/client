@@ -9,9 +9,15 @@ const Leaderboard = () => {
   useEffect(() => {
     axios
       .get("http://localhost:5000/api/leaderboards/top-users")
-      .then((response) => setTopUsers(response.data))
+      .then((response) => {
+        console.log("Données reçues :", response.data);
+        // Ajuste ici le filtrage selon la structure de tes données
+        const filteredUsers = response.data.filter(user => user.role === "user");
+        setTopUsers(filteredUsers);
+      })
       .catch(() => setError("Erreur lors du chargement du classement."));
   }, []);
+  
 
   if (error) return <p>{error}</p>;
 

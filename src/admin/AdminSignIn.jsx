@@ -3,13 +3,13 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import "./signin.css";
+import "../components/signin.css";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-function SignIn() {
+function AdminSignIn() {
   const [email, setEmail] = useState("");
   const [mdp, setMdp] = useState("");
   const [open, setOpen] = useState(false);
@@ -18,52 +18,51 @@ function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); 
-    setOpen(false); 
+    setError("");
+    setOpen(false);
 
     try {
-        const response = await axios.post("http://localhost:5000/api/auth/signin", {
-            email,
-            mdp,
-        });
+      // Appel à l'endpoint de connexion admin
+      const response = await axios.post("http://localhost:5000/api/admin/signin", {
+        email,
+        mdp,
+      });
 
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify({ id: response.data.user.id, nomPrenom: response.data.user.nomPrenom }));
+      // Stocke le token et les infos de l'utilisateur (incluant le rôle)
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify({
+          id: response.data.user.id,
+          nomPrenom: response.data.user.nomPrenom,
+          role: response.data.user.role,
+      }));
 
-        setOpen(true);
-         if (response.data.user.role === "admin") {
-      navigate("/admin"); // Dashboard admin
-    } else {
-      navigate("/dashboard"); // Dashboard utilisateur
-    }
+      setOpen(true);
+      setTimeout(() => {
+        // Redirection vers le dashboard admin
+        navigate("/admin");
+      }, 2000);
     } catch (error) {
-        if (error.response?.status === 401) {
-            setError("Email ou mot de passe incorrect.");
-        } else if (error.response?.status === 403) {
-            setError("Votre compte n'est pas activé. Vérifiez votre e-mail.");
-        } else {
-            setError("Une erreur est survenue. Veuillez réessayer.");
-        }
-        setOpen(true);
+      if (error.response?.status === 401) {
+        setError("Email ou mot de passe incorrect.");
+      } else if (error.response?.status === 403) {
+        setError("Accès refusé : Vous n'êtes pas administrateur ou votre compte n'est pas activé.");
+      } else {
+        setError("Une erreur est survenue. Veuillez réessayer.");
+      }
+      setOpen(true);
     }
-};
+  };
 
   const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
+    if (reason === "clickaway") return;
     setOpen(false);
   };
 
   return (
     <div className="signin-container">
       <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
-        <Alert
-          onClose={handleClose}
-          severity={error ? "error" : "success"}
-          sx={{ width: "100%" }}
-        >
-          {error ? error : "Connexion réussie !"}
+        <Alert onClose={handleClose} severity={error ? "error" : "success"} sx={{ width: "100%" }}>
+          {error ? error : "Connexion admin réussie !"}
         </Alert>
       </Snackbar>
 
@@ -96,27 +95,16 @@ function SignIn() {
           />
         </div>
 
-        {/* <div className="flex-row">
-          <div>
-            <input type="checkbox" />
-            <label>Se souvenir de moi</label>
-          </div>
-          <span className="span">Mot de passe oublié ?</span>
-        </div> */}
-
         <button className="button-submit" type="submit">
           Se connecter
         </button>
-
-        <p className="p">
-          Pas encore de compte ?{" "}
-          <Link to="/signup" className="span">
-            Inscrivez-vous
-          </Link>
-        </p>
       </form>
+
+      <p className="p">
+        {/* Retour à la <Link to="http://localhost:3000" className="span">connexion utilisateur</Link> */}
+      </p>
     </div>
   );
 }
 
-export default SignIn;
+export default AdminSignIn;

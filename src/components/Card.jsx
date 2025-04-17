@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 const Card = ({ user, badges, challenges }) => {
   
+  
   if (!user) return <p>Chargement...</p>;
   console.log("User:", user);
   console.log("Badges:", badges);

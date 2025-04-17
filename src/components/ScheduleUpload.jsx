@@ -68,7 +68,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
       }
     }
  // Default to a random emoji if no keyword matches
- const randomEmojis = ['🌟', '🔥', '💪', '🚀', '🎯', '🏅', '🎉', '✨', '⚡', '🎶', '🎨', '📚', '🧠', '💡', '🔍', '🛠️', '🧩', '🎲', '🎮'];
+ const randomEmojis = ['🌟', '🔥', '💪', '🚀', '🎯', '🏅',  '✨', '⚡', '📚', '🧠', '💡', '🔍', '🛠️', '🧩', ];
  return randomEmojis[Math.floor(Math.random() * randomEmojis.length)];
 
    

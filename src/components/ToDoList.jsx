@@ -116,10 +116,16 @@ const [badgeEarned, setBadgeEarned] = useState(null);
         userId: user.id,
         points: 5,
       });
-      await axios.post(
-        "http://localhost:5000/api/gamification/updateChallenge",
-        { userId: user.id, challenge: "Super Organisé" }
-      );
+      // Mettre à jour le défi "Super Organisé"
+await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
+  userId: user.id,
+  challenge: "Super Organisé",
+});
+// Mettre à jour le défi "Planificateur de la Semaine"
+await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
+  userId: user.id,
+  challenge: "Planificateur de la Semaine",
+});
 
       // Mise à jour de l'utilisateur
       const updatedUser = await axios.get(
