@@ -195,7 +195,7 @@ const [actionType, setActionType] = useState(""); // "import" ou "summary"
           }}
           disabled={files.length === 0}
         >
-          Upload
+          Importer
         </Button>
         {files.length > 0 && (
           <IconButton
@@ -210,7 +210,7 @@ const [actionType, setActionType] = useState(""); // "import" ou "summary"
 
       <Box sx={{ mt: 4 }}>
         <Typography variant="h6" gutterBottom>
-          📚 Vos cours importés
+          📚 Vos cours
         </Typography>
         {loading && <Loaders />}
         <Grid container spacing={2}>

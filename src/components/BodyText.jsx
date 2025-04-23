@@ -1,30 +1,42 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Container, Grid, Card, CardMedia, CardContent, Typography, CardActions, Button, Box } from "@mui/material";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion"; // Import Framer Motion
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import "@fontsource/poppins"; // Import Google Font
 import './BodyText.css'; // Importer le fichier CSS
+import { AuthContext } from "../context/AuthContext"; // Importer AuthContext
 
 const features = [
-  { title: "Emploi du temps", img: "/images/calendar.jpg", desc: "Visualise ton planning avec suggestions de révisions", link: "/timetable" },
-  { title: "To‑do List", img: "/images/todo.jpg", desc: "Organise tes tâches et objectifs du jour", link: "/tasks" },
-  { title: "Partage Docs", img: "/images/share.jpg", desc: "Échange PDF, cours, photos avec la communauté", link: "/share" },
-  { title: "Chat Académique", img: "/images/chat.jpg", desc: "Pose tes questions et reçois du soutien instantané", link: "/chat" },
-  { title: "PDF", img: "/images/pdf.jpg", desc: "Crée des résumés de cours avec les points clés", link: "/pdf-generator" },
+  { title: "Emploi du temps", img: "/ai-logo/1.png", desc: "Importe votre emploi du temps et reçoit les suggestions de révisions", link: "/emplois", className: "feature-image" },
+  { title: "To‑do List", img: "/ai-logo/7.png", desc: "Organise tes tâches et objectifs du jour et reçois des suggestions d’activités", link: "/todo", className: "feature-image" },
+  { title: "Partage Docs", img: "/ai-logo/10.png", desc: "Échange PDF, cours, photos avec la communauté", link: "/documents", className: "feature-image" },
+  { title: "Chat Académique", img: "/ai-logo/8.png", desc: "Pose tes questions et reçois du soutien instantané", link: "/ChatAcad", className: "feature-image" },
+  { title: "PDF", img: "/ai-logo/9.png", desc: "Crée des résumés de cours avec les points clés", link: "/courses", className: "feature-image" },
 ];
 
 function BodyText() {
+  const { isLoggedIn } = useContext(AuthContext); // Accéder à isLoggedIn depuis AuthContext
+  const navigate = useNavigate(); // Hook pour naviguer
+
+  const handleButtonClick = () => {
+    if (isLoggedIn) {
+      navigate("/emplois"); // Rediriger vers Emploi du temps si connecté
+    } else {
+      navigate("/signin"); // Rediriger vers Signin si non connecté
+    }
+  };
+
   const carouselSettings = {
     dots: true,
     infinite: true,
-    speed: 500,
+    speed: 700,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 4000,
+    autoplaySpeed: 5000,
     arrows: false,
   };
 
@@ -44,68 +56,75 @@ function BodyText() {
           height: "7vh",
         }}
       >
-        <Link to="/signin" className="span">
-          <button className="button">
-            Essayer Maintenant
-            <svg className="icon" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                fillRule="evenodd"
-                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm4.28 10.28a.75.75 0 000-1.06l-3-3a.75.75 0 10-1.06 1.06l1.72 1.72H8.25a.75.75 0 000 1.5h5.69l-1.72 1.72a.75.75 0 101.06 1.06l3-3z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
-          </button>
-        </Link>
+        <button className="button" onClick={handleButtonClick}>
+          Essayer Maintenant
+          <svg className="icon" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              fillRule="evenodd"
+              d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm4.28 10.28a.75.75 0 000-1.06l-3-3a.75.75 0 10-1.06 1.06l1.72 1.72H8.25a.75.75 0 000 1.5h5.69l-1.72 1.72a.75.75 0 101.06 1.06l3-3z"
+              clipRule="evenodd"
+            ></path>
+          </svg>
+        </button>
       </Box>
 
+    
       {/* Carousel */}
       <Container sx={{ my: 4 }}>
-        <Slider {...carouselSettings}>
-          {features.map((f, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: i * 0.2 }}
-            >
-              <Box sx={{ position: "relative" }}>
-                <CardMedia
-                  component="img"
-                  height="400"
-                  image={f.img}
-                  alt={f.title}
-                  sx={{ filter: "brightness(0.8)" }}
-                />
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    bgcolor: "rgba(0,0,0,0.4)",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    color: "#fff",
-                    textAlign: "center",
-                    p: 2,
-                  }}
-                >
-                  <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-                    {f.title}
-                  </Typography>
-                  <Typography variant="body1" sx={{ maxWidth: 600, mt: 1 }}>
-                    {f.desc}
-                  </Typography>
-                </Box>
-              </Box>
-            </motion.div>
-          ))}
-        </Slider>
-      </Container>
+  <Slider {...carouselSettings}>
+    {features.map((f, i) => (
+      <motion.div
+        key={i}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: i * 0.2 }}
+      >
+        <Box
+          sx={{
+            display: "flex", // Flexbox pour aligner horizontalement
+            flexDirection: { xs: "column", md: "row" }, // Colonne sur mobile, ligne sur desktop
+            alignItems: "center", // Centrer verticalement
+            gap: 3, // Espacement entre l'image et le texte
+            p: 4, // Padding autour du contenu
+            backgroundColor: "rgba(0, 0, 0, 0.3)", // Fond sombre et transparent
+            borderRadius: "12px", // Coins arrondis
+            // boxShadow: "0 4px 15px rgba(0, 0, 0, 0.3)", // Ombre subtile
+            color: "#fff", // Texte en blanc pour contraste
+          }}
+        >
+          {/* Image à gauche */}
+          <CardMedia
+            component="img"
+            image={f.img}
+            alt={f.title}
+            sx={{
+              width: { xs: "100%", md: "300px" }, // Largeur adaptative
+              height: "auto", // Garde les proportions
+              objectFit: "contain", // Ajuste l'image sans la déformer
+              borderRadius: "8px", // Coins arrondis pour l'image
+            }}
+          />
 
+          {/* Texte à droite */}
+          <Box sx={{ flex: 1, textAlign: { xs: "center", md: "left" } }}>
+            <Typography
+              variant="h4" // Texte plus grand
+              sx={{ fontWeight: "bold", mb: 2 }}
+            >
+              {f.title}
+            </Typography>
+            <Typography
+              variant="h6" // Texte secondaire plus grand
+              sx={{ color: "rgba(255, 255, 255, 0.8)" }}
+            >
+              {f.desc}
+            </Typography>
+          </Box>
+        </Box>
+      </motion.div>
+    ))}
+  </Slider>
+</Container>
       {/* Grid des fonctionnalités */}
       <Container sx={{ py: 4 }}>
         <Grid container spacing={4}>
@@ -127,11 +146,17 @@ function BodyText() {
                   }}
                 >
                   <CardMedia
-                    component="img"
-                    height="160"
-                    image={f.img}
-                    alt={f.title}
-                  />
+  component="img"
+  image={f.img}
+  alt={f.title}
+  sx={{
+    width: "150px", // Ajuste la largeur selon tes besoins
+    height: "150px", // Ajuste la hauteur selon tes besoins
+    objectFit: "contain", // Garde les proportions
+    margin: "0 auto", // Centre l'image horizontalement
+    paddingTop: "16px", // Ajoute un espace en haut si nécessaire
+  }}
+/>
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" sx={{ fontWeight: "bold" }}>
                       {f.title}
@@ -160,8 +185,25 @@ function BodyText() {
           ))}
         </Grid>
       </Container>
+      {/* <Box
+  component="footer"
+  sx={{
+    backgroundColor: "#007BFF", // Couleur bleue (adapte selon ta plateforme)
+    color: "#fff", // Texte en blanc pour contraste
+    textAlign: "center", // Centrer le texte
+    py: 2, // Padding vertical
+    mt: 4, // Marge en haut pour espacer du contenu principal
+    width: "100%", // Prend toute la largeur de la page
+  }}
+>
+  <Typography variant="body2">
+    © 2025 AITUDIANT.
+  </Typography>
+</Box> */}
     </main>
+      
   );
+
 }
 
 export default BodyText;

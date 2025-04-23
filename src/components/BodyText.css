@@ -14,7 +14,11 @@
     text-align: center;
     margin-bottom: 20px;
 }
-
+.feature-image {
+    width: 60px; /* Ajuste la largeur selon tes besoins */
+    height: auto; /* Garde les proportions */
+    object-fit: contain; /* Ajuste l'image pour qu'elle reste bien cadrée */
+  }
 /* Keyframes for color change animation */
 @keyframes colorChange {
     0% {

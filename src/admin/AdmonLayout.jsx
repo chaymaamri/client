@@ -47,7 +47,7 @@ export default function AdminLayout() {
     <ListItemText primary="Documents" />
   </ListItem>
   <ListItem button onClick={handleLogout}>
-    <ListItemText primary="Logout" />
+    <ListItemText primary="Déconnexion" />
   </ListItem>
 </List>
 </Drawer>

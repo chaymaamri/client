@@ -413,7 +413,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
             }}
             disabled={!file}
           >
-            Upload
+            Importer
           </Button>
           {file && (
             <IconButton

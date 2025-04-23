@@ -20,7 +20,7 @@ const pages = [
   "PDF",
   "Partage Document",
 ];
-const settings = ["Profile", "Dashboard", "Logout"];
+const settings = ["Profile", "Dashboard", "Déconnexion"];
 
 function Bar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -53,7 +53,7 @@ function Bar() {
       } else if (setting === "Profile") {
       navigate("/profile");
 
-    } else if (setting === "Logout") {
+    } else if (setting === "Déconnexion") {
       handleLogout();
     }
   };

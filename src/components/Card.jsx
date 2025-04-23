@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import InfoIcon from '@mui/icons-material/Info';  
+import IconButton from '@mui/material/IconButton';
+
+
 
 const Card = ({ user, badges, challenges }) => {
-  
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   
   if (!user) return <p>Chargement...</p>;
   console.log("User:", user);
@@ -16,10 +25,37 @@ const Card = ({ user, badges, challenges }) => {
   return (
     <StyledWrapper>
       <div className="card">
-        <div className="card__title">Bienvenue {user.nomPrenom}</div>
+      <div className="card__title">
+          Bienvenue {user.nomPrenom}
+          <IconButton onClick={handleOpen} aria-label="infos" size="small">
+            <InfoIcon />
+          </IconButton>
+        </div>
+        
         <div className="card__subtitle">
           Points: {user.points} | Niveau: {level.name} {level.icon}
         </div>
+               {/* Modal contenant les infos */}
+               <Modal open={open} onClose={handleClose}>
+          <Box sx={modalStyle}>
+            <Typography variant="h6" gutterBottom>🌟 Système de Niveaux & Récompenses</Typography>
+            <Typography variant="body2" sx={{ maxHeight: 400, overflowY: 'auto' }}>
+              🌱 Niveau 1 - Débutant : 0 points<br />
+              🚀 Niveau 2 - Avancé : 100 points<br />
+              🎓 Niveau 3 - Expert : 250 points<br />
+              🔥 Niveau 4 - Master : 500 points<br />
+              🏅 Niveau 5 - Légende : 1000 points<br /><br />
+              🔐 +20 points à l’inscription → Badge "Nouveau Départ"<br />
+              📅 +15 points pour emploi du temps → Badge "Organisé(e)"<br />
+              ✅ To-do : +5 pts/tâche , +10 pts si complétée → Badge "Étudiant Organisé"<br />
+              🎯 Défis : Super Organisé (3 tâches/jour pendant 7 jours), Planificateur (5 tâches avant dimanche)<br />
+              📚 Chatbot académique : +5 pts/question → Badge "Étudiant Curieux" → Défi "Intello du Mois" (20 questions)<br />
+              📝 Cours PDF : +10 pts import, +5 pts résumé → Badge "Pro de la Révision", Défi "Super Réviseur"<br />
+              📂 Partage de docs : +30 pts/docs validé → Badge "Partageur Engagé", Défi "Échange de Savoirs"<br />
+              💬 Chatbot Positif : +5 pts/interaction → Badge "Motivé Toujours", Défi "Positivité Active"<br />
+            </Typography>
+          </Box>
+        </Modal>
         <div className="card__wrapper">
           <div className="badges-section">
             <h4>🎖️ Badges:</h4>
@@ -71,6 +107,20 @@ function getLevel(points) {
   if (points >= 100) return { name: "Avancé", icon: "🚀" };
   return { name: "Débutant", icon: "🌱" };
 }
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '90%', // Utilise un pourcentage pour une largeur responsive
+  maxWidth: 500, // Largeur maximale pour les écrans plus grands
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+  borderRadius: 2,
+  maxHeight: '90vh', // Limite la hauteur pour éviter le débordement
+  overflowY: 'auto', // Ajoute un défilement vertical si le contenu dépasse
+};
 
 const BadgeContainer = styled.div`
   display: flex;
