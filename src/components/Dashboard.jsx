@@ -12,25 +12,24 @@ const Dashboard = () => {
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (!storedUser) {
-      setError("Utilisateur non trouvé, veuillez vous reconnecter.");
+      setError("User not found, please log in again.");
       return;
     }
 
     axios.get(`http://localhost:5000/api/user/${storedUser.id}`)
-      .then(res => setUser(res.data))
-      .catch(() => setError("Impossible de récupérer les informations."));
+    .then(res => setUser(res.data))
+    .catch(() => setError("Unable to fetch user information."));
 
-    axios.get(`http://localhost:5000/api/user/${storedUser.id}/badges`)
-      .then(response => setBadges(response.data))
-      .catch(error => console.error("Erreur récupération badges:", error));
+  axios.get(`http://localhost:5000/api/user/${storedUser.id}/badges`)
+    .then(response => setBadges(response.data))
+    .catch(error => console.error("Error fetching badges:", error));
 
-    axios.get(`http://localhost:5000/api/user/${storedUser.id}/challenges`)
-      .then(response => setChallenges(response.data))
-      .catch(error => console.error("Erreur récupération défis:", error));
-  }, []);
-
+  axios.get(`http://localhost:5000/api/user/${storedUser.id}/challenges`)
+    .then(response => setChallenges(response.data))
+    .catch(error => console.error("Error fetching challenges:", error));
+}, []);
   if (error) return <p>{error}</p>;
-  if (!user) return <p>Chargement...</p>;
+  if (!user) return <p>Loading...</p>;
 
   return (
     <>

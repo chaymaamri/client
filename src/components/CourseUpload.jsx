@@ -57,16 +57,16 @@ const [actionType, setActionType] = useState(""); // "import" ou "summary"
         headers: { "Content-Type": "multipart/form-data" },
       });
   
-      console.log("Réponse du serveur :", response.data);
-      setSnackbarMessage("Upload réussi !");
+      console.log("Server response:", response.data);
+      setSnackbarMessage("Upload successful!");
       setOpenSnackbar(true);
       setPointsEarned(10); // Points gagnés pour l'importation
       setActionType("import"); // Définir le type d'action
       setShowPointsModal(true); // Afficher la modal
       fetchCourses();
     } catch (error) {
-      console.error("Erreur lors de l'upload :", error);
-      setSnackbarMessage("Erreur lors de l'upload !");
+      console.error("Upload error :", error);
+      setSnackbarMessage("Upload failed!");
       setOpenSnackbar(true);
     } finally {
       setLoading(false);
@@ -76,7 +76,7 @@ const [actionType, setActionType] = useState(""); // "import" ou "summary"
   const fetchCourses = async () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (!storedUser || !storedUser.id) {
-      console.error("❌ Erreur : ID utilisateur introuvable.");
+      console.error("❌ Error: User ID not found.");
       return;
     }
 
@@ -84,7 +84,7 @@ const [actionType, setActionType] = useState(""); // "import" ou "summary"
       const response = await axios.get(`http://localhost:5000/api/courses/${storedUser.id}`);
       setCourses(response.data.courses);
     } catch (error) {
-      console.error("❌ Erreur lors de la récupération des cours :", error);
+      console.error("❌ Error fetching courses:", error);
       setCourses([]);
     }
   };
@@ -96,12 +96,12 @@ const [actionType, setActionType] = useState(""); // "import" ou "summary"
   const handleDelete = async (courseId) => {
     try {
       await axios.delete(`http://localhost:5000/api/courses/${courseId}`);
-      setSnackbarMessage("Cours supprimé avec succès !");
+      setSnackbarMessage("Course deleted successfully!");
       setOpenSnackbar(true);
       fetchCourses();
     } catch (error) {
-      console.error("Erreur lors de la suppression du cours :", error);
-      setSnackbarMessage("Erreur lors de la suppression du cours !");
+      console.error("Error deleting course:", error);
+      setSnackbarMessage("Error deleting course!");
       setOpenSnackbar(true);
     }
   };
@@ -125,7 +125,7 @@ const [actionType, setActionType] = useState(""); // "import" ou "summary"
       setShowPointsModal(true); // Afficher la modal
     })
     .catch((error) => {
-      console.error("Erreur lors de la consultation du résumé :", error);
+      console.error("Error viewing summary:", error);
     });
   };
 
@@ -142,26 +142,26 @@ const [actionType, setActionType] = useState(""); // "import" ou "summary"
   sx={{ zIndex: 2000 }}
 >
   <DialogTitle sx={{ textAlign: "center" }}>
-    🎉 Félicitations ! 🎉
+  🎉 Congratulations! 🎉
   </DialogTitle>
   <DialogContent sx={{ textAlign: "center" }}>
     <Typography variant="h6">
-      {actionType === "import" && (
-        <>Vous avez gagné {pointsEarned} points pour l'importation d'un cours !</>
-      )}
-      {actionType === "summary" && (
-        <>Vous avez gagné {pointsEarned} points pour la consultation d'un résumé !</>
-      )}
+    {actionType === "import" && (
+              <>You earned {pointsEarned} points for uploading a course!</>
+            )}
+            {actionType === "summary" && (
+              <>You earned {pointsEarned} points for viewing a summary!</>
+            )}
     </Typography>
   </DialogContent>
   <DialogActions>
     <Button onClick={() => setShowPointsModal(false)} color="primary">
-      Fermer
+      Close
     </Button>
   </DialogActions>
 </Dialog>
       <Typography variant="h5" gutterBottom>
-        Importer vos cours
+      Upload your courses
       </Typography>
       <Box {...getRootProps()} sx={{ textAlign: 'center', cursor: 'pointer' }}>
         <div className="container">
@@ -174,7 +174,7 @@ const [actionType, setActionType] = useState(""); // "import" ou "summary"
           </div>
           <label className="custom-file-upload">
             <input {...getInputProps()} />
-            {files.length > 0 ? files.map(file => file.name).join(", ") : "📂 Importer vos cours"}
+            {files.length > 0 ? files.map(file => file.name).join(", ") : "📂 Upload your courses"}
           </label>
         </div>
       </Box>
@@ -195,7 +195,7 @@ const [actionType, setActionType] = useState(""); // "import" ou "summary"
           }}
           disabled={files.length === 0}
         >
-          Importer
+          Upload
         </Button>
         {files.length > 0 && (
           <IconButton
@@ -210,7 +210,7 @@ const [actionType, setActionType] = useState(""); // "import" ou "summary"
 
       <Box sx={{ mt: 4 }}>
         <Typography variant="h6" gutterBottom>
-          📚 Vos cours
+          📚 Your courses
         </Typography>
         {loading && <Loaders />}
         <Grid container spacing={2}>
@@ -231,7 +231,7 @@ const [actionType, setActionType] = useState(""); // "import" ou "summary"
                         color="primary"
                         onClick={() => handleOpenDialog(course)}
                       >
-                        Voir les points clés
+                        View key points
                       </Button>
                       <IconButton
                         color="primary"
@@ -250,7 +250,7 @@ const [actionType, setActionType] = useState(""); // "import" ou "summary"
 
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
         <DialogTitle>
-          Points clés
+        Key points
           <IconButton
             aria-label="close"
             onClick={handleCloseDialog}
@@ -283,7 +283,7 @@ const [actionType, setActionType] = useState(""); // "import" ou "summary"
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
-            Fermer
+          Close
           </Button>
         </DialogActions>
       </Dialog>

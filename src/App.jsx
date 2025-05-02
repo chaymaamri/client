@@ -34,7 +34,7 @@ function AppContent() {
     const interval = setInterval(() => {
       setShowNotification(true);
       setTimeout(() => setShowNotification(false), 5000); // Cache après 5 secondes
-    }, 100000); // Affiche toutes les 100 secondes
+    }, 500000); // Affiche toutes les 100 secondes
 
     return () => clearInterval(interval);
   }, []);

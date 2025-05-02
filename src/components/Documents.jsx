@@ -28,7 +28,7 @@ import Down from "./Down"; // Votre composant de téléchargement
 function groupBy(array, key) {
   const grouped = {};
   array.forEach((item) => {
-    const groupValue = item[key] || "Inconnu";
+    const groupValue = item[key] || "Unknown";
     if (!grouped[groupValue]) {
       grouped[groupValue] = [];
     }
@@ -241,7 +241,7 @@ function Documents() {
         const data = await response.json();
         setFileList(data);
       } catch (error) {
-        console.error("Erreur lors de la récupération des fichiers :", error);
+        console.error("Error fetching files:", error);
       } finally {
         setLoading(false);
       }
@@ -287,7 +287,7 @@ function Documents() {
     if (fileName && description && speciality && selectedFile) {
       const storedUser = localStorage.getItem("user");
       if (!storedUser) {
-        setAlert("Aucun utilisateur trouvé dans le localStorage (non connecté ?).");
+        setAlert("No user found in the location (not connected?).");
         return;
       }
 
@@ -296,13 +296,13 @@ function Documents() {
         const parsedUser = JSON.parse(storedUser);
         userId = parsedUser.id;
       } catch (err) {
-        console.error("Erreur de parsing de l'utilisateur :", err);
-        setAlert("Impossible de récupérer l'ID de l'utilisateur.");
+        console.error("User's parsing error :", err);
+        setAlert("Impossible to recover the ID from the user.");
         return;
-      }
+      } 
 
       if (!userId) {
-        setAlert("L'ID de l'utilisateur est invalide ou inexistant.");
+        setAlert("User's ID is invalid or nonexistent.");
         return;
       }
 
@@ -330,14 +330,14 @@ function Documents() {
           setAlert(null);
           setShowUploadForm(false);
         } else {
-          setAlert("Erreur lors de l'envoi du fichier.");
+          setAlert("Error when sending the file.");
         }
       } catch (error) {
-        console.error("Erreur lors de l'envoi du fichier:", error);
-        setAlert("Erreur lors de l'envoi du fichier.");
+        console.error("Error when sending the file:", error);
+        setAlert("Error when sending the file.");
       }
     } else {
-      setAlert("Veuillez remplir tous les champs et sélectionner un fichier.");
+      setAlert("Please complete all fields and select a file.");
     }
   };
 
@@ -362,13 +362,13 @@ function Documents() {
       });
       if (response.ok) {
         setFileList((prev) => prev.filter((f) => f.id !== fileToDelete));
-        setAlert("Fichier supprimé avec succès !");
+        setAlert("uccessfully deleted file!");
       } else {
-        setAlert("Erreur lors de la suppression du fichier.");
+        setAlert("Error when deleting the file.");
       }
     } catch (error) {
-      console.error("Erreur lors de la suppression du fichier :", error);
-      setAlert("Erreur lors de la suppression du fichier.");
+      console.error("Error when deleting the file :", error);
+      setAlert("Error when deleting the file.");
     }
     setOpenDeleteDialog(false);
     setFileToDelete(null);
@@ -380,7 +380,7 @@ function Documents() {
         {/* Barre de recherche */}
         <div className="search-container">
           <input
-            placeholder="Search for a quick action"
+            placeholder="Search for a document by title, description .."
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -390,12 +390,12 @@ function Documents() {
         {/* Filtres */}
         <div className="filters">
           <button onClick={() => setActiveFilter("etablissement")}>
-            Par Établissement
+          By establishment
           </button>
           <button onClick={() => setActiveFilter("specialite")}>
-            Par Spécialité
+          By specialty
           </button>
-          <button onClick={() => setActiveFilter("")}>Tout Afficher</button>
+          <button onClick={() => setActiveFilter("")}>Show everything</button>
         </div>
 
         {/* Résultats */}
@@ -547,14 +547,14 @@ function Documents() {
             startIcon={<DriveFolderUploadIcon />}
             onClick={() => setShowUploadForm(!showUploadForm)}
           >
-            UPLOAD A FILE
+           Document Sharing
           </Button>
         </div>
 
         {/* Formulaire d'upload */}
         {showUploadForm && (
           <div className="upload-form">
-            <h3>Partagez un fichier important, ça peut aider les autres !</h3>
+            <h3>Share an important file, it can help others !</h3>
             {alert && (
               <Snackbar
                 open={!!alert}
@@ -565,7 +565,7 @@ function Documents() {
             )}
             <TextField
               className="upload-field"
-              label="Nom de fichier"
+              label="File name"
               variant="outlined"
               value={fileName}
               onChange={(e) => setFileName(e.target.value)}
@@ -582,15 +582,15 @@ function Documents() {
               fullWidth
             />
             <FormControl fullWidth className="upload-field">
-              <InputLabel>Spécialité</InputLabel>
+              <InputLabel>Speciality</InputLabel>
               <Select
                 value={speciality}
                 onChange={(e) => setSpeciality(e.target.value)}
               >
-                <MenuItem value="Informatique">Informatique</MenuItem>
-                <MenuItem value="Gestion">Gestion</MenuItem>
-                <MenuItem value="Économie">Économie</MenuItem>
-                <MenuItem value="Autre">Autre</MenuItem>
+                <MenuItem value="Informatique">Computer science</MenuItem>
+                <MenuItem value="Gestion">Management</MenuItem>
+                <MenuItem value="Économie">Economy</MenuItem>
+                <MenuItem value="Autre">Other</MenuItem>
               </Select>
             </FormControl>
             <div style={{ marginBottom: "10px" }}>
@@ -613,7 +613,7 @@ function Documents() {
               endIcon={<SendIcon />}
               onClick={handleSubmit}
             >
-              Envoyer
+              Send
             </Button>
           </div>
         )} 
@@ -621,19 +621,18 @@ function Documents() {
 
       {/* Dialog de confirmation de suppression */}
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
-        <DialogTitle>Confirmer la suppression</DialogTitle>
+        <DialogTitle>Confirm the deletion</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Êtes-vous sûr de vouloir supprimer ce fichier ? Cette action est
-            irréversible.
+          Are you sure you want to delete this file? This action is irreversible.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDeleteDialog} color="primary">
-            Annuler
+           Cancel
           </Button>
           <Button onClick={handleConfirmDelete} color="error" autoFocus>
-            Supprimer
+            Delete
           </Button>
         </DialogActions>
       </Dialog>

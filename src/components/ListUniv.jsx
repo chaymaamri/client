@@ -334,7 +334,7 @@ function ListUniv() {
       "Institut Supérieur d'Informatique de Medenine",
       "Institut Supérieur des Arts et Métiers de Tataouine",
       "Institut Supérieur des Sciences infirmières de Gabès",
-    ],
+    ], 
     // ... (vos données Universités ici)
   };
 

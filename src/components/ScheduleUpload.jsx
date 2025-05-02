@@ -77,14 +77,14 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
 
   // Helper functions to get the current and next day
   const getNextDay = () => {
-    const daysOfWeek = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const today = new Date();
     const nextDayIndex = (today.getDay() + 1) % 7;
     return daysOfWeek[nextDayIndex];
   };
 
   const getCurrentDay = () => {
-    const daysOfWeek = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+    const daysOfWeek =['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const today = new Date();
     return daysOfWeek[today.getDay()];
   };
@@ -96,14 +96,14 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
     const checkScheduleExists = async () => {
       const storedUser = JSON.parse(localStorage.getItem("user"));
       if (!storedUser || !storedUser.id) {
-        console.error("❌ Erreur : ID utilisateur introuvable.");
+        console.error("❌ Error: User ID not found.");
         return;
       }
       try {
         const response = await axios.get(`http://localhost:5000/api/schedule-exists/${storedUser.id}`);
         setScheduleExists(response.data.exists);
       } catch (error) {
-        console.error("❌ Erreur lors de la vérification de l'emploi du temps :", error);
+        console.error("❌ Error when verifying the timetable:", error);
       }
     };
 
@@ -114,7 +114,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
     const fetchSuggestions = async () => {
       const storedUser = JSON.parse(localStorage.getItem("user"));
       if (!storedUser || !storedUser.id) {
-        console.error("❌ Erreur : ID utilisateur introuvable.");
+        console.error("❌ Error : User ID not found.");
         return;
       }
       const suggestionsKey = `suggestions_${storedUser.id}`;
@@ -173,7 +173,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
       });
   
       console.log("Réponse du serveur :", response.data);
-      setSnackbarMessage("Upload réussi !");
+      setSnackbarMessage("Successful upload !");
       setOpenSnackbar(true);
   
       // Invalider le cache des suggestions après un upload réussi
@@ -196,8 +196,8 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
         setBadgeEarned(null);
       }, 20000);
     } catch (error) {
-      console.error("Erreur lors de l'upload :", error);
-      setSnackbarMessage("Erreur lors de l'upload !");
+      console.error("Upload done :", error);
+      setSnackbarMessage("Upload done!");
       setOpenSnackbar(true);
     } finally {
       setLoading(false);
@@ -213,12 +213,12 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
       setOpenSnackbar(true);
   
       // Vérifier si le badge "Pro de la Révision" a été attribué
-      if (response.data.message.includes("Badge 'Pro de la Révision' attribué")) {
+      if (response.data.message.includes("Badge 'pro of revision' awarded")) {
         setRevisionBadgeEarned(true); // Mettre à jour l'état pour afficher la modal
       }
     } catch (error) {
       console.error("Erreur lors du suivi de la suggestion :", error);
-      setSnackbarMessage("Erreur lors du suivi de la suggestion !");
+      setSnackbarMessage("Error when monitoring the suggestion!");
       setOpenSnackbar(true);
     }
   };
@@ -227,7 +227,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
   const handleModify = async () => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (!storedUser || !storedUser.id) {
-      console.error("❌ Erreur : ID utilisateur introuvable.");
+      console.error("❌ Error : User ID not found.");
       return;
     }
   
@@ -236,7 +236,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
       setFile(null);
       setScheduleExists(false);
       setSuggestions([]);
-      setSnackbarMessage("Emploi du temps supprimé avec succès !");
+      setSnackbarMessage(" Schedule successfully removed !");
       setOpenSnackbar(true);
   
       // Invalider les caches liés aux suggestions
@@ -245,7 +245,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
       localStorage.removeItem(`activity_suggestions_${storedUser.id}`);
     } catch (error) {
       console.error("Erreur lors de la suppression de l'emploi du temps :", error);
-      setSnackbarMessage("Erreur lors de la suppression de l'emploi du temps !");
+      setSnackbarMessage("Error when deleting the Schedule !");
       setOpenSnackbar(true);
     }
   };
@@ -254,7 +254,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
   const fetchSuggestions = async () => {
     const storedUser  = JSON.parse(localStorage.getItem("user"));
     if (!storedUser  || !storedUser .id) {
-      console.error("❌ Erreur : ID utilisateur introuvable.");
+      console.error("❌ Error : ID utilisateur introuvable.");
       return;
     }
   
@@ -333,7 +333,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
   sx={{ zIndex: 2000 }}
 >
   <DialogTitle sx={{ position: "relative", textAlign: "center" }}>
-    🎉 Félicitations ! 🎉
+    🎉 Congratulations ! 🎉
     <IconButton
       onClick={() => setRevisionBadgeEarned(false)}
       sx={{ position: "absolute", right: 8, top: 8 }}
@@ -343,7 +343,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
   </DialogTitle>
   <DialogContent sx={{ textAlign: "center", position: "relative" }}>
     <Typography variant="h6" sx={{ marginTop: 4 }}>
-      🏅 Vous avez obtenu le badge : <strong>Pro de la Révision</strong> !
+      🏅 You got the badge : <strong>Revision pro</strong> !
     </Typography>
     <div className="emoji-container" style={{ marginTop: "16px" }}>
       <span className="emoji">🎉</span>
@@ -359,7 +359,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
       {scheduleExists ? (
         <Box sx={{ textAlign: 'center', mt: 4 }}>
           <Typography variant="h6" gutterBottom>
-            Vous avez déjà importé un emploi du temps.
+          You have already imported a schedule.
           </Typography>
           <Button
             variant="contained"
@@ -375,7 +375,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
               fontSize: '16px',
             }}
           >
-            Modifier l'emploi du temps
+            Modify the schedule
           </Button>
         </Box>
       ) : (
@@ -390,7 +390,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
             </div>
             <label className="custom-file-upload">
               <input {...getInputProps()} />
-              {file ? file.name : "📂 Importer votre emploi du temps"}
+              {file ? file.name : "📂Import your schedule"}
             </label>
           </div>
         </Box>
@@ -413,7 +413,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
             }}
             disabled={!file}
           >
-            Importer
+            Upload
           </Button>
           {file && (
             <IconButton
@@ -434,7 +434,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
   sx={{ zIndex: 2000 }}
 >
   <DialogTitle sx={{ position: "relative", textAlign: "center" }}>
-    🎉 Félicitations ! 🎉
+    🎉 Congratulations ! 🎉
     <IconButton
       onClick={() => {
         setShowRewardModal(false);
@@ -452,11 +452,11 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
       <div className="guirlande"></div>
     </div>
     <Typography variant="h6" sx={{ marginTop: 4 }}>
-      🎊 Vous avez gagné {pointsEarned} point{pointsEarned > 1 ? "s" : ""} ! 🎊
+      🎊You have won{pointsEarned} point{pointsEarned > 1 ? "s" : ""} ! 🎊
     </Typography>
     {badgeEarned && (
       <Typography variant="h6" sx={{ marginTop: 2 }}>
-        🏅 Vous avez obtenu le badge : <strong>{badgeEarned}</strong> !
+        🏅 You have obtained the badge: <strong>{badgeEarned}</strong> !
       </Typography>
     )}
     <div className="emoji-container" style={{ marginTop: "16px" }}>
@@ -473,7 +473,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
 
       <Box sx={{ mt: 4 }}>
         <Typography variant="h6" gutterBottom>
-          🎓 Suggestions de révision pour {currentDay}
+          🎓 Revision suggestions for {currentDay}
         </Typography>
         {loadingSuggestions && <Loaders />}
         <Grid container spacing={2}>
@@ -497,7 +497,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
           {/* Bouton pour confirmer le suivi de la suggestion */}
           <Box sx={{ mt: 2, textAlign: "center" }}>
             <Button variant="contained" color="secondary" onClick={handleFollowSuggestion}>
-              J'ai suivi cette suggestion
+            I followed this suggestion
             </Button>
           </Box>
         </CardContent>
@@ -511,7 +511,7 @@ const [revisionBadgeEarned, setRevisionBadgeEarned] = useState(false);
 
       <Box sx={{ mt: 4 }}>
         <Typography variant="h6" gutterBottom>
-          🏃‍♂️ Suggestions d'activités
+          🏃‍♂️ Activities suggestions
         </Typography>
         {loadingActivitySuggestions && <Loaders />}
         <Grid container spacing={2}>

@@ -11,16 +11,26 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import Divider from "@mui/material/Divider";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 
 const pages = [
-  "Emplois du temps",
-  "TODO List",
-  "Chat académique",
+  "Schedule",
+  "To-do List",
+  "Academic Chat",
   "PDF",
-  "Partage Document",
+  "Document Sharing",
 ];
-const settings = ["Profile", "Dashboard", "Déconnexion"];
+const settings = [
+  { name: "Profile", icon: <AccountCircleIcon />, route: "/profile" },
+  { name: "Dashboard", icon: <DashboardIcon />, route: "/dashboard" },
+  { name: "Logout", icon: <LogoutIcon />, route: null },
+];
 
 function Bar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -32,6 +42,7 @@ function Bar() {
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+  
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -46,29 +57,23 @@ function Bar() {
 
   const handleMenuItemClick = (setting) => {
     handleCloseUserMenu();
-    if (setting === "Profile") {
-      navigate("/profile");
-    } else if (setting === "Dashboard") {
-      navigate("/dashboard");
-      } else if (setting === "Profile") {
-      navigate("/profile");
-
-    } else if (setting === "Déconnexion") {
+    if (setting.name === "Logout") {
       handleLogout();
+    } else if (setting.route) {
+      navigate(setting.route);
     }
   };
 
   const handlePageClick = (page) => {
-    if (page === "TODO List") {
+    if (page === "To-do List") {
       navigate("/todo");
-    } else if (page === "Partage Document") {
+    } else if (page === "Document Sharing") {
       navigate("/documents");
-    } else if (page === "Chat académique") {
+    } else if (page === "Academic Chat") {
       navigate("/ChatAcad");
-    } else if (page === "Emplois du temps") {
+    } else if (page === "Schedule") {
       navigate("/emplois");
-    }
-    else if (page==="PDF"){
+    } else if (page === "PDF") {
       navigate("/courses");
     }
     handleCloseNavMenu();
@@ -92,6 +97,31 @@ function Bar() {
       }
     }
   }, []);
+
+  // Fonction pour obtenir les initiales du nom
+  const getInitials = (name) => {
+    if (!name) return "G";
+    const names = name.split(" ");
+    if (names.length >= 2) {
+      return `${names[0].charAt(0)}${names[1].charAt(0)}`;
+    }
+    return name.charAt(0);
+  };
+
+  // Fonction pour générer une couleur aléatoire mais cohérente basée sur le nom d'utilisateur
+  const stringToColor = (string) => {
+    if (!string) return "#1976d2";
+    let hash = 0;
+    for (let i = 0; i < string.length; i++) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    let color = "#";
+    for (let i = 0; i < 3; i++) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.slice(-2);
+    }
+    return color;
+  };
 
   return (
     <header>
@@ -195,20 +225,63 @@ function Bar() {
 
             <Box sx={{ flexGrow: 0 }}>
               {isLoggedIn ? (
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt={user ? user.nomPrenom : "Guest"}>
-                      {user ? user.nomPrenom.charAt(0).toUpperCase() : "G"}
-                    </Avatar>
-                  </IconButton>
-                </Tooltip>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Typography 
+                    variant="subtitle1" 
+                    sx={{ 
+                      mr: 2, 
+                      display: { xs: "none", md: "block" }, 
+                      fontWeight: 500 
+                    }}
+                  >
+                    {user ? user.nomPrenom : ""}
+                  </Typography>
+                  <Tooltip title="Account Settings">
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                      <Avatar 
+                        alt={user ? user.nomPrenom : "Guest"}
+                        sx={{ 
+                          width: 40, 
+                          height: 40,
+                          bgcolor: user ? stringToColor(user.nomPrenom) : "#1976d2",
+                          fontWeight: 600,
+                          boxShadow: "0px 3px 5px rgba(0,0,0,0.2)",
+                          transition: "transform 0.2s",
+                          "&:hover": {
+                            transform: "scale(1.1)",
+                          }
+                        }}
+                      >
+                        {user ? getInitials(user.nomPrenom) : "G"}
+                      </Avatar>
+                    </IconButton>
+                  </Tooltip>
+                </Box>
               ) : (
-                <Button color="inherit" onClick={() => navigate("/signin")}>
-                  Se connecter
+                <Button 
+                  color="inherit" 
+                  onClick={() => navigate("/signin")}
+                  variant="outlined"
+                  sx={{
+                    borderColor: "rgba(255, 255, 255, 0.5)",
+                    "&:hover": {
+                      borderColor: "white",
+                      backgroundColor: "rgba(255, 255, 255, 0.1)"
+                    }
+                  }}
+                >
+                  Sign in
                 </Button>
               )}
               <Menu
-                sx={{ mt: "45px" }}
+                sx={{ 
+                  mt: "45px",
+                  "& .MuiPaper-root": {
+                    borderRadius: 2,
+                    minWidth: 200,
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+                  }
+                }}
                 id="menu-appbar"
                 anchorEl={anchorElUser}
                 anchorOrigin={{
@@ -223,9 +296,44 @@ function Bar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
+                {user && (
+                  <Box sx={{ px: 2, py: 1.5, backgroundColor: "primary.light", color: "white" }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      {user.nomPrenom}
+                    </Typography>
+                    <Typography variant="body2" sx={{ opacity: 0.7 }}>
+                      {user.email || "Student"}
+                    </Typography>
+                  </Box>
+                )}
+                
+                <Divider />
+                
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={() => handleMenuItemClick(setting)}>
-                    <Typography textAlign="center">{setting}</Typography>
+                  <MenuItem 
+                    key={setting.name} 
+                    onClick={() => handleMenuItemClick(setting)}
+                    sx={{ 
+                      py: 1.5,
+                      "&:hover": {
+                        backgroundColor: setting.name === "Logout" 
+                          ? "rgba(211, 47, 47, 0.04)" 
+                          : "rgba(25, 118, 210, 0.04)"
+                      }
+                    }}
+                  >
+                    <ListItemIcon sx={{ 
+                      color: setting.name === "Logout" ? "error.main" : "primary.main",
+                      minWidth: 36
+                    }}>
+                      {setting.icon}
+                    </ListItemIcon>
+                    <ListItemText 
+                      primary={setting.name} 
+                      sx={{ 
+                        color: setting.name === "Logout" ? "error.main" : "inherit"
+                      }} 
+                    />
                   </MenuItem>
                 ))}
               </Menu>

@@ -43,11 +43,11 @@ function AdminSignIn() {
       }, 2000);
     } catch (error) {
       if (error.response?.status === 401) {
-        setError("Email ou mot de passe incorrect.");
+        setError("Email or password incorrect.");
       } else if (error.response?.status === 403) {
-        setError("Accès refusé : Vous n'êtes pas administrateur ou votre compte n'est pas activé.");
+        setError("Access refused: you are not administrator or your account is not activated.");
       } else {
-        setError("Une erreur est survenue. Veuillez réessayer.");
+        setError("An error occurred. Please try again.");
       }
       setOpen(true);
     }
@@ -62,7 +62,7 @@ function AdminSignIn() {
     <div className="signin-container">
       <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={error ? "error" : "success"} sx={{ width: "100%" }}>
-          {error ? error : "Connexion admin réussie !"}
+          {error ? error : "Successful admin connection !"}
         </Alert>
       </Snackbar>
 
@@ -74,7 +74,7 @@ function AdminSignIn() {
           <input
             type="text"
             className="input"
-            placeholder="Entrez votre Email"
+            placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -82,13 +82,13 @@ function AdminSignIn() {
         </div>
 
         <div className="flex-column">
-          <label>Mot de passe</label>
+          <label>Password</label>
         </div>
         <div className="inputForm">
           <input
             type="password"
             className="input"
-            placeholder="Entrez votre mot de passe"
+            placeholder="Enter your password"
             value={mdp}
             onChange={(e) => setMdp(e.target.value)}
             required
@@ -96,7 +96,7 @@ function AdminSignIn() {
         </div>
 
         <button className="button-submit" type="submit">
-          Se connecter
+        Log in
         </button>
       </form>
 

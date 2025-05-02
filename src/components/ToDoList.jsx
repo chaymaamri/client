@@ -30,11 +30,11 @@ const TodoList = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentTaskIndex, setCurrentTaskIndex] = useState(null);
   const [newTaskValue, setNewTaskValue] = useState("");
-  // Nouvelle modal pour l'ajout de points
+  // New modal for adding points
   const [showPointsModal, setShowPointsModal] = useState(false);
   const [pointsEarned, setPointsEarned] = useState(null);
   const [showBadgeModal, setShowBadgeModal] = useState(false);
-const [badgeEarned, setBadgeEarned] = useState(null);
+  const [badgeEarned, setBadgeEarned] = useState(null);
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
@@ -58,7 +58,7 @@ const [badgeEarned, setBadgeEarned] = useState(null);
       setTasks(response.data);
       localStorage.setItem("tasks", JSON.stringify(response.data));
     } catch (error) {
-      console.error("Erreur lors de la récupération des tâches :", error);
+      console.error("Error fetching tasks:", error);
     }
   };
 
@@ -69,7 +69,7 @@ const [badgeEarned, setBadgeEarned] = useState(null);
       );
       setSuggestions(response.data.suggestions);
     } catch (error) {
-      console.error("Erreur lors de la récupération des suggestions :", error);
+      console.error("Error fetching suggestions:", error);
     }
   };
 
@@ -80,7 +80,7 @@ const [badgeEarned, setBadgeEarned] = useState(null);
       });
     } catch (error) {
       console.error(
-        "Erreur lors de la mise à jour de l'état de la todo list :",
+        "Error updating todo list status:",
         error
       );
     }
@@ -88,56 +88,60 @@ const [badgeEarned, setBadgeEarned] = useState(null);
 
   const handleAddTask = async () => {
     if (task.trim() === "") {
-      setError("Ajouter une tâche!");
+      setError("Add a task!");
       return;
     }
     try {
-      // Ajout de la tâche
-      const response = await axios.post("http://localhost:5000/api/todo/add", {
+      // Add task to server
+      await axios.post("http://localhost:5000/api/todo/add", {
         userId: user.id,
         task,
       });
-      const newTask = response.data;
-      setTasks([...tasks, newTask]);
+  
+      // Reload all tasks from server
+      await fetchTasks();
+  
       setTask("");
       setError("");
       markTodoListAsModified();
-
-      // Afficher la modal pour 5 points
+  
+      // Show modal for 5 points
       setPointsEarned(5);
       setShowPointsModal(true);
       setTimeout(() => {
         setShowPointsModal(false);
         setPointsEarned(null);
       }, 20000);
-
-      // Appels aux endpoints de gamification
+  
+      // Gamification points
       await axios.post("http://localhost:5000/api/gamification/addPoints", {
         userId: user.id,
         points: 5,
       });
-      // Mettre à jour le défi "Super Organisé"
-await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
-  userId: user.id,
-  challenge: "Super Organisé",
-});
-// Mettre à jour le défi "Planificateur de la Semaine"
-await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
-  userId: user.id,
-  challenge: "Planificateur de la Semaine",
-});
-
-      // Mise à jour de l'utilisateur
+  
+      // Update challenges
+      await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
+        userId: user.id,
+        challenge: "Super Organized",
+      });
+      await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
+        userId: user.id,
+        challenge: "Planner of the Week",
+      });
+  
+      // Update user
       const updatedUser = await axios.get(
         `http://localhost:5000/api/user/${user.id}`
       );
       localStorage.setItem("user", JSON.stringify(updatedUser.data));
       setUser(updatedUser.data);
+  
     } catch (error) {
-      console.error("Erreur lors de l'ajout de la tâche :", error);
+      console.error("Error adding task:", error);
     }
   };
-
+  
+  
   const toggleCompleted = async (index) => {
     const newTasks = [...tasks];
     const taskToUpdate = newTasks[index];
@@ -156,7 +160,7 @@ await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
       );
       markTodoListAsModified();
   
-      // Si la tâche vient d'être complétée, afficher la modal pour 10 points
+      // If task just completed, show modal for 10 points
       if (updatedCompleted && !previousCompleted) {
         setPointsEarned(10);
         setShowPointsModal(true);
@@ -166,13 +170,13 @@ await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
         }, 20000);
       }
   
-      // Vérifier si un badge a été attribué
+      // Check if a badge was awarded
       if (response.data.badge) {
         setBadgeEarned(response.data.badge);
         setShowBadgeModal(true);
       }
     } catch (error) {
-      console.error("Erreur lors de la mise à jour de la tâche :", error);
+      console.error("Error updating task:", error);
       newTasks[index] = { ...taskToUpdate, completed: previousCompleted };
       setTasks(newTasks);
     }
@@ -188,7 +192,7 @@ await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
       markTodoListAsModified();
       setShowDeleteModal(false);
     } catch (error) {
-      console.error("Erreur lors de la suppression de la tâche :", error);
+      console.error("Error deleting task:", error);
     }
   };
 
@@ -207,7 +211,7 @@ await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
       markTodoListAsModified();
       setShowEditModal(false);
     } catch (error) {
-      console.error("Erreur lors de la modification de la tâche :", error);
+      console.error("Error editing task:", error);
     }
   };
 
@@ -218,7 +222,7 @@ await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
       </Typography>
 
       <TextField
-        label="Ajouter une tâche"
+        label="Add a task"
         variant="outlined"
         value={task}
         onChange={(e) => setTask(e.target.value)}
@@ -230,7 +234,7 @@ await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
         className="todo-button"
         onClick={handleAddTask}
       >
-        Ajouter
+        Add
       </Button>
 
       {error && (
@@ -244,13 +248,15 @@ await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
             className={`task ${taskItem.completed ? "completed" : ""}`}
             sx={{ display: "flex", alignItems: "center" }}
           >
-            <ListItemText
-              primary={taskItem.task}
-              secondary={`Ajouté le: ${new Date(
-                taskItem.due_date
-              ).toLocaleDateString()}`}
-              sx={{ flexGrow: 1 }}
-            />
+           <ListItemText
+  primary={taskItem.task}
+  secondary={
+    taskItem.due_date 
+      ? `Added on: ${new Date(taskItem.due_date).toLocaleDateString()}`
+      : "Date not available"
+  }
+/>
+
             <div style={{ display: "flex", alignItems: "center" }}>
               <IconButton
                 onClick={(e) => {
@@ -287,30 +293,30 @@ await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
       {showDeleteModal && (
         <div className="modal">
           <div className="modal-content">
-            <h2>Confirmer la suppression</h2>
-            <p>Êtes-vous sûr de vouloir supprimer cette tâche ?</p>
-            <Button onClick={handleDeleteTask}>Oui</Button>
-            <Button onClick={() => setShowDeleteModal(false)}>Non</Button>
+            <h2>Confirm Deletion</h2>
+            <p>Are you sure you want to delete this task?</p>
+            <Button onClick={handleDeleteTask}>Yes</Button>
+            <Button onClick={() => setShowDeleteModal(false)}>No</Button>
           </div>
         </div>
-      )}
+      )} 
 
       {showEditModal && (
         <div className="modal">
           <div className="modal-content">
-            <h2>Modifier la tâche</h2>
+            <h2>Edit Task</h2>
             <TextField
               value={newTaskValue}
               onChange={(e) => setNewTaskValue(e.target.value)}
               fullWidth
             />
-            <Button onClick={handleEditTask}>Enregistrer</Button>
-            <Button onClick={() => setShowEditModal(false)}>Annuler</Button>
+            <Button onClick={handleEditTask}>Save</Button>
+            <Button onClick={() => setShowEditModal(false)}>Cancel</Button>
           </div>
         </div>
       )}
 
-      {/* Modal de points */}
+      {/* Points Modal */}
       <Dialog
   open={showPointsModal}
   onClose={() => {
@@ -320,7 +326,7 @@ await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
   sx={{ zIndex: 2000 }}
 >
   <DialogTitle sx={{ position: "relative", textAlign: "center" }}>
-    🎉 Points ajoutés 🎉
+    🎉 Points added 🎉
     <IconButton
       onClick={() => {
         setShowPointsModal(false);
@@ -332,19 +338,19 @@ await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
     </IconButton>
   </DialogTitle>
   <DialogContent sx={{ textAlign: "center", position: "relative" }}>
-    {/* Guirlandes animées */}
+    {/* Animated garlands */}
     <div className="guirlande-container">
       <div className="guirlande"></div>
       <div className="guirlande"></div>
     </div>
 
-    {/* Message principal */}
+    {/* Main message */}
     <Typography variant="h6" sx={{ marginTop: 4 }}>
-      🎊 Vous avez gagné {pointsEarned} point
+      🎊 You earned {pointsEarned} point
       {pointsEarned > 1 ? "s" : ""} ! 🎊
     </Typography>
 
-    {/* Emojis animés */}
+    {/* Animated emojis */}
     <div className="emoji-container">
       <span className="emoji">🎉</span>
       <span className="emoji">✨</span>
@@ -362,7 +368,7 @@ await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
   sx={{ zIndex: 2000 }}
 >
   <DialogTitle sx={{ position: "relative", textAlign: "center" }}>
-    🎉 Félicitations ! 🎉
+    🎉 Congratulations! 🎉
     <IconButton
       onClick={() => {
         setShowBadgeModal(false);
@@ -375,7 +381,7 @@ await axios.post("http://localhost:5000/api/gamification/updateChallenge", {
   </DialogTitle>
   <DialogContent sx={{ textAlign: "center", position: "relative" }}>
     <Typography variant="h6" sx={{ marginTop: 4 }}>
-      Vous avez obtenu le badge : <strong>{badgeEarned}</strong> 🏅
+      You earned the badge: <strong>{badgeEarned}</strong> 🏅
     </Typography>
     <div className="emoji-container">
       <span className="emoji">🎉</span>

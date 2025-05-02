@@ -10,12 +10,13 @@ import './BodyText.css'; // Importer le fichier CSS
 import { AuthContext } from "../context/AuthContext"; // Importer AuthContext
 
 const features = [
-  { title: "Emploi du temps", img: "/ai-logo/1.png", desc: "Importe votre emploi du temps et reçoit les suggestions de révisions", link: "/emplois", className: "feature-image" },
-  { title: "To‑do List", img: "/ai-logo/7.png", desc: "Organise tes tâches et objectifs du jour et reçois des suggestions d’activités", link: "/todo", className: "feature-image" },
-  { title: "Partage Docs", img: "/ai-logo/10.png", desc: "Échange PDF, cours, photos avec la communauté", link: "/documents", className: "feature-image" },
-  { title: "Chat Académique", img: "/ai-logo/8.png", desc: "Pose tes questions et reçois du soutien instantané", link: "/ChatAcad", className: "feature-image" },
-  { title: "PDF", img: "/ai-logo/9.png", desc: "Crée des résumés de cours avec les points clés", link: "/courses", className: "feature-image" },
+  { title: "Schedule", img: "/ai-logo/1.png", desc: "Import your schedule and get revision suggestions", link: "/emplois", className: "feature-image" },
+  { title: "To‑do List", img: "/ai-logo/7.png", desc: "Organize your tasks and daily goals and get activity suggestions", link: "/todo", className: "feature-image" },
+  { title: "Document Sharing", img: "/ai-logo/10.png", desc: "Share PDFs, lectures, and photos with the community", link: "/documents", className: "feature-image" },
+  { title: "Academic Chat", img: "/ai-logo/8.png", desc: "Ask your questions and get instant support", link: "/ChatAcad", className: "feature-image" },
+  { title: "PDF Summarizer", img: "/ai-logo/9.png", desc: "Generate course summaries with key points", link: "/courses", className: "feature-image" },
 ];
+
 
 function BodyText() {
   const { isLoggedIn } = useContext(AuthContext); // Accéder à isLoggedIn depuis AuthContext
@@ -44,9 +45,10 @@ function BodyText() {
     <main style={{ fontFamily: "Poppins, sans-serif" }}>
       {/* Texte et bouton */}
       <div className="image-text-container">
-        <h3 className="text">
-          Bienvenue sur AITUDIANT<br /> votre clé pour réussir vos études
-        </h3>
+      <h3 className="text">
+  Welcome to STUDAI<br /> your key to academic success
+</h3>
+
       </div>
       <Box
         sx={{
@@ -57,7 +59,7 @@ function BodyText() {
         }}
       >
         <button className="button" onClick={handleButtonClick}>
-          Essayer Maintenant
+        Try Now
           <svg className="icon" viewBox="0 0 24 24" fill="currentColor">
             <path
               fillRule="evenodd"
@@ -176,7 +178,7 @@ function BodyText() {
                         "&:hover": { color: "#1565c0" },
                       }}
                     >
-                      Accéder →
+                      Access →
                     </Button>
                   </CardActions>
                 </Card>
@@ -185,21 +187,6 @@ function BodyText() {
           ))}
         </Grid>
       </Container>
-      {/* <Box
-  component="footer"
-  sx={{
-    backgroundColor: "#007BFF", // Couleur bleue (adapte selon ta plateforme)
-    color: "#fff", // Texte en blanc pour contraste
-    textAlign: "center", // Centrer le texte
-    py: 2, // Padding vertical
-    mt: 4, // Marge en haut pour espacer du contenu principal
-    width: "100%", // Prend toute la largeur de la page
-  }}
->
-  <Typography variant="body2">
-    © 2025 AITUDIANT.
-  </Typography>
-</Box> */}
     </main>
       
   );

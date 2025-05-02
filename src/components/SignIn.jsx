@@ -18,35 +18,42 @@ function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); 
-    setOpen(false); 
+    setError("");
+    setOpen(false);
 
     try {
-        const response = await axios.post("http://localhost:5000/api/auth/signin", {
-            email,
-            mdp,
-        });
+      const response = await axios.post("http://localhost:5000/api/auth/signin", {
+        email,
+        mdp,
+      });
 
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify({ id: response.data.user.id, nomPrenom: response.data.user.nomPrenom }));
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify({ id: response.data.user.id, nomPrenom: response.data.user.nomPrenom }));
 
-        setOpen(true);
-         if (response.data.user.role === "admin") {
-      navigate("/admin"); // Dashboard admin
-    } else {
-      navigate("/dashboard"); // Dashboard utilisateur
-    }
+      setOpen(true);
+      if (response.data.user.role === "admin") {
+        navigate("/admin"); // Admin dashboard
+      } else {
+        navigate("/dashboard"); // User dashboard
+      }
     } catch (error) {
-        if (error.response?.status === 401) {
-            setError("Email ou mot de passe incorrect.");
-        } else if (error.response?.status === 403) {
-            setError("Votre compte n'est pas activé. Vérifiez votre e-mail.");
+      if (error.response?.status === 401) {
+        setError("Incorrect email or password.");
+      } else if (error.response?.status === 403) {
+        const errorMessage = error.response?.data;
+        if (errorMessage === "Your account has been rejected. Please contact the administrator.") {
+          setError("Your account has been rejected. Please contact the administrator.");
+        } else if (errorMessage === "Your account is not activated. Please check your email.") {
+          setError("Your account is not activated. Please check your email.");
         } else {
-            setError("Une erreur est survenue. Veuillez réessayer.");
+          setError("Access denied.");
         }
-        setOpen(true);
+      } else {
+        setError("An error occurred. Please try again.");
+      }
+      setOpen(true);
     }
-};
+  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -58,12 +65,8 @@ function SignIn() {
   return (
     <div className="signin-container">
       <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
-        <Alert
-          onClose={handleClose}
-          severity={error ? "error" : "success"}
-          sx={{ width: "100%" }}
-        >
-          {error ? error : "Connexion réussie !"}
+        <Alert onClose={handleClose} severity={error ? "error" : "success"} sx={{ width: "100%" }}>
+          {error ? error : "Login successful!"}
         </Alert>
       </Snackbar>
 
@@ -75,7 +78,7 @@ function SignIn() {
           <input
             type="text"
             className="input"
-            placeholder="Entrez votre Email"
+            placeholder="Enter your Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -83,13 +86,13 @@ function SignIn() {
         </div>
 
         <div className="flex-column">
-          <label>Mot de passe</label>
+          <label>Password</label>
         </div>
         <div className="inputForm">
           <input
             type="password"
             className="input"
-            placeholder="Entrez votre mot de passe"
+            placeholder="Enter your password"
             value={mdp}
             onChange={(e) => setMdp(e.target.value)}
             required
@@ -99,19 +102,19 @@ function SignIn() {
         {/* <div className="flex-row">
           <div>
             <input type="checkbox" />
-            <label>Se souvenir de moi</label>
+            <label>Remember me</label>
           </div>
-          <span className="span">Mot de passe oublié ?</span>
+          <span className="span">Forgot password?</span>
         </div> */}
 
         <button className="button-submit" type="submit">
-          Se connecter
+          Sign In
         </button>
 
         <p className="p">
-          Pas encore de compte ?{" "}
+          Don't have an account?{" "}
           <Link to="/signup" className="span">
-            Inscrivez-vous
+            Sign Up
           </Link>
         </p>
       </form>

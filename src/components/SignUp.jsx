@@ -38,9 +38,9 @@ function SignUp() {
     } catch (error) {
       console.error('Erreur d\'inscription', error);
       if (error.response && error.response.status === 409) {
-        setErrorMessage("Cet email est déjà utilisé. Essayez un autre.");
+        setErrorMessage("This email is already in use. Try another.");
       } else {
-        setErrorMessage("Une erreur s'est produite. Veuillez réessayer.");
+        setErrorMessage("An error has occurred. Please try again.");
       }
     }
   };
@@ -56,7 +56,7 @@ function SignUp() {
     <div className="signin-container">
       <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          Inscription réussie ! Vérifiez votre e-mail pour activer votre compte.
+          Registration successful! Please check your email to activate your account.
         </Alert>
       </Snackbar>
 
@@ -64,13 +64,13 @@ function SignUp() {
 
       <form className="form" onSubmit={handleSubmit}>
         <div className="flex-column">
-          <label>Nom et Prénom</label>
+          <label>Full Name</label>
         </div>
         <div className="inputForm">
           <input
             type="text"
             className="input"
-            placeholder="Entrez votre Nom et Prénom"
+            placeholder="Enter your Full Name"
             value={nomPrenom}
             onChange={(e) => setNomPrenom(e.target.value)}
             required
@@ -84,7 +84,7 @@ function SignUp() {
           <input
             type="email"
             className="input"
-            placeholder="Entrez votre Email"
+            placeholder="Enter your Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -92,13 +92,13 @@ function SignUp() {
         </div>
 
         <div className="flex-column">
-          <label>Mot de passe</label>
+          <label>Password</label>
         </div>
         <div className="inputForm">
           <input
             type="password"
             className="input"
-            placeholder="Entrez votre mot de passe"
+            placeholder="Enter your Password"
             value={mdp}
             onChange={(e) => setMdp(e.target.value)}
             required
@@ -106,7 +106,7 @@ function SignUp() {
         </div>
 
         <div className="flex-column">
-          <label>Votre Établissement</label>
+          <label>Your Institution</label>
         </div>
         <div className="inputForm">
           <select
@@ -115,26 +115,42 @@ function SignUp() {
             onChange={(e) => setEtablissement(e.target.value)}
             required
           >
-            <option value="">Sélectionnez votre établissement</option>
+            <option value="">Select your institution</option>
             <option value="ISG Gabes">ISG Gabès</option>
-            <option value="Autre">Autre</option>
+            <option value="Faculté des Sciences de Gabès">Faculté des Sciences de Gabès</option>
+            <option value="Ecole Nationale d'Ingénieurs de Gabès">Ecole Nationale d'Ingénieurs de Gabès</option>
+            {/* <option value="ISG Gabes">Institut Supérieur de Gestion de Gabès</option> */}
+            <option value="Institut Supérieur des Langues de Gabès">Institut Supérieur des Langues de Gabès</option>
+            <option value="Institut Supérieur des Arts et Métiers de Gabès">Institut Supérieur des Arts et Métiers de Gabès</option>
+            <option value="Institut Supérieur de Biologie Appliquée de Medenine">Institut Supérieur de Biologie Appliquée de Medenine</option>
+            <option value="Institut Supérieur des Etudes Juridiques de Gabès">Institut Supérieur des Etudes Juridiques de Gabès</option>
+            <option value="Institut Supérieur d'Informatique et de Multimédia de Gabès">Institut Supérieur d'Informatique et de Multimédia de Gabès</option>
+            <option value="Institut Supérieur des Sciences Appliquées et de Technologie de Gabès">Institut Supérieur des Sciences Appliquées et de Technologie de Gabès</option>
+            <option value="Institut Supérieur des Sciences et Techniques des Eaux de Gabès">Institut Supérieur des Sciences et Techniques des Eaux de Gabès</option>
+            <option value="Institut Supérieur des Systèmes Industriels de Gabès">Institut Supérieur des Systèmes Industriels de Gabès</option>
+            <option value="Institut Supérieur des Etudes Appliquées en Humanités de Médenine">Institut Supérieur des Etudes Appliquées en Humanités de Médenine</option>
+            <option value="Institut Supérieur d'Informatique de Medenine">Institut Supérieur d'Informatique de Medenine</option>
+            <option value="Institut Supérieur des Arts et Métiers de Tataouine">Institut Supérieur des Arts et Métiers de Tataouine</option>
+            <option value="Institut Supérieur des Sciences infirmières de Gabès">Institut Supérieur des Sciences infirmières de Gabès</option>
+            <option value="Other">Other</option>
+
           </select>
         </div>
 
         <div className="flex-column">
-          <label>Vos Hobbies</label>
+          <label>Hobbies</label>
         </div>
         <div className="inputForm">
           <input
             type="text"
             className="input"
-            placeholder="Entrez vos hobbies"
+            placeholder="Enter your hobbies"
             value={hobbies}
             onChange={(e) => setHobbies(e.target.value)}
           />
         </div>
 
-        <button className="button-submit" type="submit">S'inscrire</button>
+        <button className="button-submit" type="submit">Sign Up</button>
       </form>
     </div>
   );

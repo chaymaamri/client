@@ -24,7 +24,7 @@ function NotificationPopup({ onClose }) {
   const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
   return (
-    <Box
+    <Box 
       sx={{
         position: 'fixed',
         bottom: 100,
